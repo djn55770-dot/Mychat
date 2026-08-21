@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             background: #d9dbd5;
         }
 
         .chat {
             width: 100%;
-            max-width: 500px;
+            max-width: 560px;
             height: 100vh;
             margin: auto;
             background: white;
@@ -26,33 +28,42 @@
         .header {
             background: #075e54;
             color: white;
-            padding: 15px;
-            font-size: 21px;
+            padding: 16px;
+            font-size: 22px;
             font-weight: bold;
         }
 
-        .room {
-            padding: 10px;
-            background: #128c7e;
+        .join {
             display: flex;
-            gap: 5px;
+            padding: 10px;
+            background: #075e54;
         }
 
-        .room input {
+        #chatId {
             flex: 1;
-            padding: 10px;
+            padding: 13px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 16px;
             outline: none;
         }
 
-        .room button {
+        #joinBtn {
+            margin-left: 8px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
             background: white;
             color: #075e54;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
             font-weight: bold;
+        }
+
+        #roomName {
+            padding: 8px 15px;
+            background: #128c7e;
+            color: white;
+            font-size: 14px;
+            display: none;
         }
 
         #messages {
@@ -70,6 +81,7 @@
             width: fit-content;
             max-width: 80%;
             word-wrap: break-word;
+            font-size: 16px;
         }
 
         .send {
@@ -87,7 +99,7 @@
             font-size: 16px;
         }
 
-        .send button {
+        #sendBtn {
             margin-left: 8px;
             padding: 12px 18px;
             border: none;
@@ -107,21 +119,21 @@
         💬 My Chat
     </div>
 
-    <!-- Chat ID -->
-    <div class="room">
+    <div class="join">
         <input id="chatId" placeholder="Chat ID डालें">
-        <button onclick="joinChat()">Join</button>
+        <button id="joinBtn" onclick="joinChat()">Join</button>
     </div>
+
+    <div id="roomName"></div>
 
     <div id="messages"></div>
 
     <div class="send">
-        <input id="message" placeholder="Message likho...">
-        <button onclick="sendMessage()">Send</button>
+        <input id="message" placeholder="Message likho..." disabled>
+        <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
     </div>
 
 </div>
-
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -130,51 +142,95 @@
 <script>
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
-  authDomain: "mychat-51ee7.firebaseapp.com",
-  projectId: "mychat-51ee7",
-  storageBucket: "mychat-51ee7.firebasestorage.app",
-  messagingSenderId: "917061147739",
-  appId: "1:917061147739:web:26644bb81926959325337e",
-  measurementId: "G-SK11R1SYJ8"
+    apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
+    authDomain: "mychat-51ee7.firebaseapp.com",
+    projectId: "mychat-51ee7",
+    storageBucket: "mychat-51ee7.firebasestorage.app",
+    messagingSenderId: "917061147739",
+    appId: "1:917061147739:web:26644bb81926959325337e",
+    measurementId: "G-SK11R1SYJ8"
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
-let currentChat = "";
+let currentChatId = "";
+let unsubscribe = null;
 
 
-/* Chat join karna */
+// Chat join karna
 function joinChat() {
 
-    const chatInput = document.getElementById("chatId");
+    const input = document.getElementById("chatId");
+    const chatId = input.value.trim();
 
-    const id = chatInput.value.trim();
-
-    if (id === "") {
+    if (chatId === "") {
         alert("Chat ID डालें");
         return;
     }
 
-    currentChat = id;
+    currentChatId = chatId;
 
-    document.getElementById("messages").innerHTML = "";
+    // Purana listener band
+    if (unsubscribe) {
+        unsubscribe();
+    }
+
+    document.getElementById("roomName").style.display = "block";
+    document.getElementById("roomName").textContent =
+        "🔐 Chat ID: " + currentChatId;
+
+    document.getElementById("message").disabled = false;
+    document.getElementById("sendBtn").disabled = false;
+
+    input.value = "";
 
     listenMessages();
-
-    alert("Chat join ho gaya: " + id);
 }
 
 
-/* Message bhejna */
-function sendMessage() {
+// Real-time messages
+function listenMessages() {
 
-    if (currentChat === "") {
-        alert("Pehle Chat ID डालकर Join karein");
-        return;
-    }
+    const messages = document.getElementById("messages");
+
+    messages.innerHTML = "";
+
+    unsubscribe = db.collection("messages")
+        .where("chatId", "==", currentChatId)
+        .orderBy("createdAt", "asc")
+        .onSnapshot((snapshot) => {
+
+            messages.innerHTML = "";
+
+            snapshot.forEach((doc) => {
+
+                const data = doc.data();
+
+                const div = document.createElement("div");
+
+                div.className = "message";
+
+                div.textContent = data.text;
+
+                messages.appendChild(div);
+            });
+
+            messages.scrollTop = messages.scrollHeight;
+
+        }, (error) => {
+
+            console.error(error);
+
+            messages.innerHTML =
+                "<p style='color:red'>Messages load nahi ho pa rahe.</p>";
+        });
+}
+
+
+// Message send karna
+function sendMessage() {
 
     const input = document.getElementById("message");
 
@@ -182,14 +238,18 @@ function sendMessage() {
 
     if (text === "") return;
 
+    if (currentChatId === "") {
+        alert("Pehle Chat ID join karo");
+        return;
+    }
+
     db.collection("messages").add({
 
-        chatId: currentChat,
+        chatId: currentChatId,
 
         text: text,
 
-        createdAt:
-            firebase.firestore.FieldValue.serverTimestamp()
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
 
     });
 
@@ -197,39 +257,29 @@ function sendMessage() {
 }
 
 
-/* Real-time messages */
-function listenMessages() {
+// Enter dabane par message send
+document.getElementById("message").addEventListener("keydown", function(event) {
 
-    db.collection("messages")
-      .where("chatId", "==", currentChat)
-      .orderBy("createdAt", "asc")
-      .onSnapshot((snapshot) => {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
 
-        const messages =
-            document.getElementById("messages");
+});
 
-        messages.innerHTML = "";
 
-        snapshot.forEach((doc) => {
+// Chat ID save karna
+window.addEventListener("load", function() {
 
-            const data = doc.data();
+    const savedChat = localStorage.getItem("chatId");
 
-            const div =
-                document.createElement("div");
+    if (savedChat) {
 
-            div.className = "message";
+        document.getElementById("chatId").value = savedChat;
 
-            div.textContent = data.text;
+        joinChat();
+    }
 
-            messages.appendChild(div);
-
-        });
-
-        messages.scrollTop =
-            messages.scrollHeight;
-
-    });
-}
+});
 
 </script>
 
