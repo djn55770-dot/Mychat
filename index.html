@@ -26,8 +26,32 @@
         .header {
             background: #075e54;
             color: white;
-            padding: 18px;
-            font-size: 22px;
+            padding: 15px;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .room {
+            padding: 10px;
+            background: #128c7e;
+            display: flex;
+            gap: 5px;
+        }
+
+        .room input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .room button {
+            background: white;
+            color: #075e54;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
             font-weight: bold;
         }
 
@@ -54,7 +78,7 @@
             background: #ddd;
         }
 
-        input {
+        #message {
             flex: 1;
             padding: 13px;
             border-radius: 25px;
@@ -63,7 +87,7 @@
             font-size: 16px;
         }
 
-        button {
+        .send button {
             margin-left: 8px;
             padding: 12px 18px;
             border: none;
@@ -83,6 +107,12 @@
         💬 My Chat
     </div>
 
+    <!-- Chat ID -->
+    <div class="room">
+        <input id="chatId" placeholder="Chat ID डालें">
+        <button onclick="joinChat()">Join</button>
+    </div>
+
     <div id="messages"></div>
 
     <div class="send">
@@ -91,6 +121,7 @@
     </div>
 
 </div>
+
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -112,40 +143,94 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
-function sendMessage() {
-  const input = document.getElementById("message");
-  const text = input.value.trim();
+let currentChat = "";
 
-  if (text === "") return;
 
-  db.collection("messages").add({
-    text: text,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
+/* Chat join karna */
+function joinChat() {
 
-  input.value = "";
+    const chatInput = document.getElementById("chatId");
+
+    const id = chatInput.value.trim();
+
+    if (id === "") {
+        alert("Chat ID डालें");
+        return;
+    }
+
+    currentChat = id;
+
+    document.getElementById("messages").innerHTML = "";
+
+    listenMessages();
+
+    alert("Chat join ho gaya: " + id);
 }
 
-// Firebase se messages real-time me dikhana
-db.collection("messages")
-  .orderBy("createdAt", "asc")
-  .onSnapshot((snapshot) => {
 
-    const messages = document.getElementById("messages");
+/* Message bhejna */
+function sendMessage() {
 
-    messages.innerHTML = "";
+    if (currentChat === "") {
+        alert("Pehle Chat ID डालकर Join karein");
+        return;
+    }
 
-    snapshot.forEach((doc) => {
-      const data = doc.data();
+    const input = document.getElementById("message");
 
-      const div = document.createElement("div");
-      div.textContent = data.text;
+    const text = input.value.trim();
 
-      messages.appendChild(div);
+    if (text === "") return;
+
+    db.collection("messages").add({
+
+        chatId: currentChat,
+
+        text: text,
+
+        createdAt:
+            firebase.firestore.FieldValue.serverTimestamp()
+
     });
 
-    messages.scrollTop = messages.scrollHeight;
-  });
+    input.value = "";
+}
+
+
+/* Real-time messages */
+function listenMessages() {
+
+    db.collection("messages")
+      .where("chatId", "==", currentChat)
+      .orderBy("createdAt", "asc")
+      .onSnapshot((snapshot) => {
+
+        const messages =
+            document.getElementById("messages");
+
+        messages.innerHTML = "";
+
+        snapshot.forEach((doc) => {
+
+            const data = doc.data();
+
+            const div =
+                document.createElement("div");
+
+            div.className = "message";
+
+            div.textContent = data.text;
+
+            messages.appendChild(div);
+
+        });
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
+    });
+}
+
 </script>
 
 </body>
