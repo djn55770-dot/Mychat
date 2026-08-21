@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Chat App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #d9dbd5;
+        }
+
+        .chat {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            margin: auto;
+            background: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #075e54;
+            color: white;
+            padding: 18px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        #messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #efe7dd;
+        }
+
+        .message {
+            background: #dcf8c6;
+            padding: 10px 14px;
+            margin: 8px 0 8px auto;
+            border-radius: 10px;
+            width: fit-content;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .send {
+            display: flex;
+            padding: 10px;
+            background: #ddd;
+        }
+
+        input {
+            flex: 1;
+            padding: 13px;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        button {
+            margin-left: 8px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 25px;
+            background: #128c7e;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="chat">
+
+    <div class="header">
+        💬 My Chat
+    </div>
+
+    <div id="messages"></div>
+
+    <div class="send">
+        <input id="message" placeholder="Message likho...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
+  authDomain: "mychat-51ee7.firebaseapp.com",
+  projectId: "mychat-51ee7",
+  storageBucket: "mychat-51ee7.firebasestorage.app",
+  messagingSenderId: "917061147739",
+  appId: "1:917061147739:web:26644bb81926959325337e",
+  measurementId: "G-SK11R1SYJ8"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
+function sendMessage() {
+  const input = document.getElementById("message");
+  const text = input.value.trim();
+
+  if (text === "") return;
+
+  db.collection("messages").add({
+    text: text,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  input.value = "";
+}
+
+// Firebase se messages real-time me dikhana
+db.collection("messages")
+  .orderBy("createdAt", "asc")
+  .onSnapshot((snapshot) => {
+
+    const messages = document.getElementById("messages");
+
+    messages.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+
+      const div = document.createElement("div");
+      div.textContent = data.text;
+
+      messages.appendChild(div);
+    });
+
+    messages.scrollTop = messages.scrollHeight;
+  });
+</script>
+
+</body>
+</html>
