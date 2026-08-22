@@ -1,585 +1,752 @@
 <!DOCTYPE html>
 <html lang="hi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>My Chat</title>
+    <title>My Chat App</title>
 
-<style>
-* {
-    box-sizing: border-box;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background: #efe7dd;
-}
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: #d9dbd5;
+        }
 
-body {
-    overflow: hidden;
-}
+        body {
+            overflow: hidden;
+        }
 
-.chat {
-    width: 100%;
-    max-width: 550px;
-    height: 100dvh;
-    margin: auto;
-    background: #efe7dd;
-    display: flex;
-    flex-direction: column;
-}
+        .chat {
+            width: 100%;
+            max-width: 600px;
+            height: 100vh;
+            margin: auto;
+            background: #efe7dd;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
 
-/* HEADER */
-.header {
-    flex-shrink: 0;
-    background: #075e54;
-    color: white;
-    padding: 16px;
-    font-size: 23px;
-    font-weight: bold;
-}
+        /* HEADER */
+        .header {
+            flex-shrink: 0;
+            background: #075e54;
+            color: white;
+            padding: 18px 20px;
+            font-size: 25px;
+            font-weight: bold;
+        }
 
-/* JOIN */
-.join {
-    flex-shrink: 0;
-    display: flex;
-    gap: 8px;
-    padding: 9px;
-    background: #075e54;
-}
+        /* JOIN AREA */
+        .join {
+            flex-shrink: 0;
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            background: #075e54;
+        }
 
-.join input {
-    flex: 1;
-    min-width: 0;
-    padding: 13px;
-    border: none;
-    border-radius: 8px;
-    font-size: 17px;
-    outline: none;
-    background: white;
-    color: black;
-}
+        #chatId {
+            flex: 1;
+            min-width: 0;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 17px;
+        }
 
-.join button {
-    padding: 0 18px;
-    border: none;
-    border-radius: 8px;
-    background: white;
-    color: #075e54;
-    font-size: 16px;
-    font-weight: bold;
-}
+        #joinBtn {
+            padding: 0 20px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            color: #075e54;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-/* ROOM */
-.room {
-    display: none;
-    flex-shrink: 0;
-    padding: 9px 12px;
-    background: #128c7e;
-    color: white;
-    font-size: 16px;
-}
+        #joinBtn:active {
+            transform: scale(0.97);
+        }
 
-/* MESSAGES */
-#messages {
-    flex: 1;
-    min-height: 0;
-    padding: 12px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
+        /* ROOM NAME */
+        #roomName {
+            flex-shrink: 0;
+            background: #128c7e;
+            color: white;
+            padding: 10px 15px;
+            font-size: 17px;
+            display: none;
+        }
 
-/* MESSAGE */
-.message {
-    padding: 10px 14px;
-    margin: 7px 0;
-    border-radius: 10px;
-    max-width: 78%;
-    width: fit-content;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    font-size: 16px;
-    color: #111;
-}
+        /* TYPING */
+        #typingStatus {
+            flex-shrink: 0;
+            height: 25px;
+            padding-left: 15px;
+            padding-top: 5px;
+            color: #128c7e;
+            font-size: 14px;
+            font-style: italic;
+            background: #efe7dd;
+        }
 
-/* APNA MESSAGE */
-.my-message {
-    margin-left: auto;
-    margin-right: 0;
-    background: #dcf8c6;
-}
+        /* MESSAGES */
+        #messages {
+            flex: 1;
+            min-height: 0;
+            padding: 10px 10px 12px;
+            overflow-y: auto;
 
-/* DUSRE KA MESSAGE */
-.other-message {
-    margin-left: 0;
-    margin-right: auto;
-    background: white;
-}
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
 
-/* SEND AREA */
-.send {
-    flex-shrink: 0;
-    display: none;
-    padding: 9px;
-    gap: 8px;
-    background: #ddd;
-    padding-bottom: calc(9px + env(safe-area-inset-bottom));
-}
+            background: #efe7dd;
+        }
 
-.send input {
-    flex: 1;
-    min-width: 0;
-    height: 48px;
-    padding: 0 16px;
-    border: none;
-    border-radius: 25px;
-    outline: none;
-    background: white;
-    color: #111;
-    font-size: 17px;
-}
+        .message {
+            padding: 10px 14px;
+            margin: 4px 0;
+            border-radius: 12px;
+            max-width: 78%;
+            width: fit-content;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+            font-size: 16px;
+            line-height: 1.35;
+        }
 
-.send input::placeholder {
-    color: #777;
-}
+        /* MY MESSAGE */
+        .my-message {
+            align-self: flex-end;
+            background: #dcf8c6;
+            border-bottom-right-radius: 3px;
+        }
 
-.send button {
-    flex-shrink: 0;
-    height: 48px;
-    padding: 0 19px;
-    border: none;
-    border-radius: 25px;
-    background: #128c7e;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-}
+        /* OTHER MESSAGE */
+        .other-message {
+            align-self: flex-start;
+            background: white;
+            border-bottom-left-radius: 3px;
+        }
 
-/* MOBILE KEYBOARD FIX */
-@media (max-width: 600px) {
+        /* SEND AREA */
+        .send {
+            flex-shrink: 0;
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            background: #ddd;
+        }
 
-    .chat {
-        max-width: none;
-    }
+        #message {
+            flex: 1;
+            min-width: 0;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px;
+            background: white;
+        }
 
-    .header {
-        padding: 14px;
-        font-size: 22px;
-    }
+        #message:disabled {
+            background: #eeeeee;
+        }
 
-    .join {
-        padding: 8px;
-    }
+        #sendBtn {
+            flex-shrink: 0;
+            padding: 0 20px;
+            border: none;
+            border-radius: 25px;
+            background: #128c7e;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-    .send {
-        padding: 8px;
-    }
+        #sendBtn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
 
-    .send input {
-        font-size: 16px;
-    }
-}
-</style>
+        #sendBtn:active {
+            transform: scale(0.97);
+        }
+
+        /* ERROR */
+        .error {
+            color: red;
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* MOBILE */
+        @media (max-width: 500px) {
+
+            .header {
+                font-size: 23px;
+                padding: 16px;
+            }
+
+            #chatId {
+                font-size: 16px;
+            }
+
+            #joinBtn {
+                padding: 0 16px;
+            }
+
+            .message {
+                max-width: 82%;
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="chat">
+    <div class="chat">
 
-    <div class="header">
-        💬 My Chat
+        <!-- HEADER -->
+        <div class="header">
+            💬 My Chat
+        </div>
+
+        <!-- CHAT ID -->
+        <div class="join">
+
+            <input
+                id="chatId"
+                type="text"
+                placeholder="Chat ID डालें"
+                autocomplete="off"
+            >
+
+            <button id="joinBtn" onclick="joinChat()">
+                Join
+            </button>
+
+        </div>
+
+        <!-- ROOM NAME -->
+        <div id="roomName"></div>
+
+        <!-- TYPING STATUS -->
+        <div id="typingStatus"></div>
+
+        <!-- MESSAGES -->
+        <div id="messages"></div>
+
+        <!-- SEND -->
+        <div class="send">
+
+            <input
+                id="message"
+                type="text"
+                placeholder="Message likho..."
+                disabled
+                autocomplete="off"
+                oninput="typing()"
+                onkeydown="handleEnter(event)"
+            >
+
+            <button
+                id="sendBtn"
+                onclick="sendMessage()"
+                disabled
+            >
+                Send
+            </button>
+
+        </div>
+
     </div>
 
-    <div class="join">
-        <input
-            id="chatId"
-            type="text"
-            placeholder="Chat ID डालें"
-        >
 
-        <button onclick="joinChat()">
-            Join
-        </button>
-    </div>
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 
-    <div class="room" id="roomName"></div>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-    <div id="messages"></div>
 
-    <div class="send" id="sendBox">
+    <script>
 
-        <input
-            id="message"
-            type="text"
-            placeholder="Message likho..."
-            autocomplete="off"
-        >
+        /* =========================
+           FIREBASE CONFIG
+        ========================= */
 
-        <button onclick="sendMessage()">
-            Send
-        </button>
+        const firebaseConfig = {
 
-    </div>
+            apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
 
-</div>
+            authDomain: "mychat-51ee7.firebaseapp.com",
 
+            projectId: "mychat-51ee7",
 
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+            storageBucket: "mychat-51ee7.firebasestorage.app",
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+            messagingSenderId: "917061147739",
 
+            appId: "1:917061147739:web:26644bb81926959325337e",
 
-<script>
+            measurementId: "G-SK11R1SYJ8"
 
-const firebaseConfig = {
+        };
 
-    apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
 
-    authDomain: "mychat-51ee7.firebaseapp.com",
+        firebase.initializeApp(firebaseConfig);
 
-    projectId: "mychat-51ee7",
+        const db = firebase.firestore();
 
-    storageBucket: "mychat-51ee7.firebasestorage.app",
 
-    messagingSenderId: "917061147739",
+        /* =========================
+           UNIQUE USER ID
+        ========================= */
 
-    appId: "1:917061147739:web:26644bb81926959325337e",
+        let myUserId = localStorage.getItem("myUserId");
 
-    measurementId: "G-SK11R1SYJ8"
-};
+        if (!myUserId) {
 
+            myUserId =
+                "user_" +
+                Date.now() +
+                "_" +
+                Math.random()
+                    .toString(36)
+                    .substring(2, 8);
 
-firebase.initializeApp(firebaseConfig);
+            localStorage.setItem("myUserId", myUserId);
+        }
 
 
-const db = firebase.firestore();
+        /* =========================
+           VARIABLES
+        ========================= */
 
+        let currentChatId = "";
 
-let currentChatId = "";
+        let unsubscribeMessages = null;
 
-let myUserId = "";
+        let unsubscribeTyping = null;
 
-let unsubscribe = null;
+        let typingTimer = null;
 
 
-/* MOBILE KI UNIQUE ID */
+        /* =========================
+           JOIN CHAT
+        ========================= */
 
-function getUserId() {
+        function joinChat() {
 
-    let id = localStorage.getItem("myChatUserId");
+            const input =
+                document.getElementById("chatId");
 
-    if (!id) {
+            const chatId =
+                input.value.trim();
 
-        id =
-            "user_" +
-            Date.now() +
-            "_" +
-            Math.random()
-                .toString(36)
-                .substring(2, 8);
+            if (chatId === "") {
 
-        localStorage.setItem(
-            "myChatUserId",
-            id
-        );
-    }
+                alert("Chat ID डालें");
 
-    return id;
-}
+                return;
+            }
 
 
-myUserId = getUserId();
+            currentChatId = chatId;
 
 
-/* JOIN CHAT */
+            /* पुराने listener बंद */
 
-function joinChat() {
+            if (unsubscribeMessages) {
 
-    const input =
-        document.getElementById("chatId");
+                unsubscribeMessages();
 
-    const chatId =
-        input.value.trim();
+                unsubscribeMessages = null;
+            }
 
-    if (chatId === "") {
 
-        alert("Chat ID डालें");
+            if (unsubscribeTyping) {
 
-        return;
-    }
+                unsubscribeTyping();
 
+                unsubscribeTyping = null;
+            }
 
-    currentChatId = chatId;
 
+            /* Room show */
 
-    if (unsubscribe) {
+            const roomName =
+                document.getElementById("roomName");
 
-        unsubscribe();
+            roomName.style.display = "block";
 
-        unsubscribe = null;
-    }
+            roomName.textContent =
+                "🔒 Chat ID: " + currentChatId;
 
 
-    document.getElementById(
-        "roomName"
-    ).style.display = "block";
+            /* Message input ON */
 
+            document.getElementById("message").disabled = false;
 
-    document.getElementById(
-        "roomName"
-    ).textContent =
-        "🔒 Chat ID: " + currentChatId;
+            document.getElementById("sendBtn").disabled = false;
 
 
-    document.getElementById(
-        "sendBox"
-    ).style.display = "flex";
+            /* Messages load */
 
+            loadMessages();
 
-    loadMessages();
 
+            /* Typing watch */
 
-    /* MESSAGE BOX PAR FOCUS */
+            watchTyping();
 
-    setTimeout(function() {
+        }
 
-        document
-            .getElementById("message")
-            .focus();
 
-    }, 300);
-}
+        /* =========================
+           SEND MESSAGE
+        ========================= */
 
+        function sendMessage() {
 
-/* LOAD MESSAGES */
+            if (currentChatId === "") {
 
-function loadMessages() {
+                alert("Pehle Chat ID Join karein");
 
-    const messages =
-        document.getElementById("messages");
+                return;
+            }
 
 
-    messages.innerHTML =
-        "<p style='text-align:center;color:#777;'>Messages load ho rahe hain...</p>";
+            const input =
+                document.getElementById("message");
 
+            const text =
+                input.value.trim();
 
-    unsubscribe = db
 
-        .collection("chats")
+            if (text === "") {
 
-        .doc(currentChatId)
+                return;
+            }
 
-        .collection("messages")
 
-        .onSnapshot(
+            db.collection("messages")
+                .add({
 
-            function(snapshot) {
+                    chatId: currentChatId,
 
-                messages.innerHTML = "";
+                    text: text,
 
+                    sender: myUserId,
 
-                if (snapshot.empty) {
+                    createdAt:
+                        firebase.firestore.FieldValue
+                            .serverTimestamp()
 
-                    messages.innerHTML =
-                        "<p style='text-align:center;color:#777;'>Abhi koi message nahi hai.</p>";
+                })
 
-                    return;
-                }
+                .then(() => {
 
+                    input.value = "";
 
-                let list = [];
+                    stopTyping();
 
+                })
 
-                snapshot.forEach(function(doc) {
+                .catch((error) => {
 
-                    list.push(doc.data());
+                    console.error(error);
 
-                });
-
-
-                list.sort(function(a, b) {
-
-                    return (a.time || 0) -
-                           (b.time || 0);
-
-                });
-
-
-                list.forEach(function(data) {
-
-                    const div =
-                        document.createElement("div");
-
-
-                    div.classList.add(
-                        "message"
+                    alert(
+                        "Message send nahi hua"
                     );
 
+                });
 
-                    if (
-                        data.senderId ===
-                        myUserId
-                    ) {
-
-                        div.classList.add(
-                            "my-message"
-                        );
-
-                    } else {
-
-                        div.classList.add(
-                            "other-message"
-                        );
-                    }
+        }
 
 
-                    div.textContent =
-                        data.text || "";
+        /* =========================
+           LOAD MESSAGES
+        ========================= */
+
+        function loadMessages() {
+
+            const messages =
+                document.getElementById("messages");
 
 
-                    messages.appendChild(div);
+            unsubscribeMessages =
+                db.collection("messages")
+
+                    .where(
+                        "chatId",
+                        "==",
+                        currentChatId
+                    )
+
+                    .onSnapshot(
+
+                        (snapshot) => {
+
+                            messages.innerHTML = "";
+
+
+                            const data = [];
+
+
+                            snapshot.forEach((doc) => {
+
+                                data.push({
+
+                                    id: doc.id,
+
+                                    ...doc.data()
+
+                                });
+
+                            });
+
+
+                            /* Time ke according sort */
+
+                            data.sort((a, b) => {
+
+                                const aTime =
+                                    a.createdAt
+                                        ? a.createdAt.toMillis()
+                                        : 0;
+
+                                const bTime =
+                                    b.createdAt
+                                        ? b.createdAt.toMillis()
+                                        : 0;
+
+                                return aTime - bTime;
+
+                            });
+
+
+                            /* Messages show */
+
+                            data.forEach((msg) => {
+
+                                const div =
+                                    document.createElement("div");
+
+
+                                div.classList.add("message");
+
+
+                                if (
+                                    msg.sender === myUserId
+                                ) {
+
+                                    div.classList.add(
+                                        "my-message"
+                                    );
+
+                                } else {
+
+                                    div.classList.add(
+                                        "other-message"
+                                    );
+
+                                }
+
+
+                                div.textContent =
+                                    msg.text;
+
+
+                                messages.appendChild(div);
+
+                            });
+
+
+                            /* Latest message ke paas */
+
+                            messages.scrollTop =
+                                messages.scrollHeight;
+
+                        },
+
+                        (error) => {
+
+                            console.error(error);
+
+                            messages.innerHTML =
+                                "<div class='error'>" +
+                                "Messages load nahi ho pa rahe." +
+                                "</div>";
+
+                        }
+
+                    );
+
+        }
+
+
+        /* =========================
+           TYPING
+        ========================= */
+
+        function typing() {
+
+            if (currentChatId === "") {
+
+                return;
+            }
+
+
+            db.collection("typing")
+                .doc(currentChatId)
+                .set({
+
+                    userId: myUserId,
+
+                    typing: true,
+
+                    time:
+                        firebase.firestore.FieldValue
+                            .serverTimestamp()
 
                 });
 
 
-                messages.scrollTop =
-                    messages.scrollHeight;
-            },
+            clearTimeout(typingTimer);
 
 
-            function(error) {
+            typingTimer = setTimeout(() => {
 
-                console.error(error);
+                stopTyping();
+
+            }, 1500);
+
+        }
 
 
-                messages.innerHTML =
-                    "<p style='color:red;padding:10px;'>" +
-                    "❌ Messages load nahi ho pa rahe.<br><br>" +
-                    error.message +
-                    "</p>";
+        /* =========================
+           STOP TYPING
+        ========================= */
 
+        function stopTyping() {
+
+            if (currentChatId === "") {
+
+                return;
             }
-        );
-}
 
 
-/* SEND MESSAGE */
+            db.collection("typing")
+                .doc(currentChatId)
+                .set({
 
-function sendMessage() {
+                    userId: myUserId,
 
-    const input =
-        document.getElementById("message");
+                    typing: false,
 
+                    time:
+                        firebase.firestore.FieldValue
+                            .serverTimestamp()
 
-    const text =
-        input.value.trim();
+                });
 
-
-    if (text === "") {
-
-        return;
-    }
-
-
-    if (currentChatId === "") {
-
-        alert(
-            "Pehle Chat ID Join karo"
-        );
-
-        return;
-    }
+        }
 
 
-    db
+        /* =========================
+           WATCH OTHER USER TYPING
+        ========================= */
 
-        .collection("chats")
+        function watchTyping() {
 
-        .doc(currentChatId)
-
-        .collection("messages")
-
-        .add({
-
-            text: text,
-
-            senderId: myUserId,
-
-            time: Date.now()
-
-        })
+            const status =
+                document.getElementById("typingStatus");
 
 
-        .then(function() {
+            unsubscribeTyping =
+                db.collection("typing")
+                    .doc(currentChatId)
+                    .onSnapshot((doc) => {
 
-            input.value = "";
-
-            input.focus();
-
-        })
-
-
-        .catch(function(error) {
-
-            alert(
-                "Message send nahi hua: " +
-                error.message
-            );
-
-        });
-}
+                        const data =
+                            doc.data();
 
 
-/* ENTER SE MESSAGE SEND */
+                        if (
+                            data &&
+                            data.typing === true &&
+                            data.userId !== myUserId
+                        ) {
 
-document
-    .getElementById("message")
-    .addEventListener(
-        "keydown",
-        function(event) {
+                            status.textContent =
+                                "typing...";
+
+                        } else {
+
+                            status.textContent =
+                                "";
+
+                        }
+
+                    });
+
+        }
+
+
+        /* =========================
+           ENTER BUTTON
+        ========================= */
+
+        function handleEnter(event) {
 
             if (event.key === "Enter") {
 
-                event.preventDefault();
-
                 sendMessage();
+
             }
 
         }
-    );
 
 
-/* KEYBOARD OPEN HONE PAR */
+        /* =========================
+           ENTER ON CHAT ID
+        ========================= */
 
-if (window.visualViewport) {
+        document
+            .getElementById("chatId")
+            .addEventListener(
+                "keydown",
+                function(event) {
 
-    window.visualViewport.addEventListener(
-        "resize",
-        function() {
+                    if (event.key === "Enter") {
 
-            setTimeout(function() {
+                        joinChat();
 
-                const messages =
-                    document.getElementById(
-                        "messages"
-                    );
+                    }
 
-                messages.scrollTop =
-                    messages.scrollHeight;
+                }
+            );
 
-            }, 100);
-
-        }
-    );
-}
-
-</script>
+    </script>
 
 </body>
+
 </html>
