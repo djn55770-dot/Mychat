@@ -172,23 +172,6 @@ function joinChat() {
 
     currentChatId = chatId;
 
-    // Purana listener band
-    if (unsubscribe) {
-        unsubscribe();
-    }
-
-    document.getElementById("roomName").style.display = "block";
-    document.getElementById("roomName").textContent =
-        "🔐 Chat ID: " + currentChatId;
-
-    document.getElementById("message").disabled = false;
-    document.getElementById("sendBtn").disabled = false;
-
-    input.value = "";
-
-    listenMessages();
-}
-
 
 // Real-time messages
 function joinChat() {
