@@ -2,7 +2,8 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <title>My Chat</title>
 
 <style>
@@ -10,44 +11,58 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     font-family: Arial, sans-serif;
-    background: #d9dbd5;
+    background: #efe7dd;
+}
+
+body {
+    overflow: hidden;
 }
 
 .chat {
     width: 100%;
     max-width: 550px;
-    height: 100vh;
+    height: 100dvh;
     margin: auto;
     background: #efe7dd;
     display: flex;
     flex-direction: column;
 }
 
+/* HEADER */
 .header {
+    flex-shrink: 0;
     background: #075e54;
     color: white;
-    padding: 17px;
+    padding: 16px;
     font-size: 23px;
     font-weight: bold;
 }
 
+/* JOIN */
 .join {
+    flex-shrink: 0;
     display: flex;
     gap: 8px;
-    padding: 10px;
+    padding: 9px;
     background: #075e54;
 }
 
 .join input {
     flex: 1;
+    min-width: 0;
     padding: 13px;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 17px;
     outline: none;
+    background: white;
+    color: black;
 }
 
 .join button {
@@ -56,67 +71,118 @@ body {
     border-radius: 8px;
     background: white;
     color: #075e54;
+    font-size: 16px;
     font-weight: bold;
 }
 
+/* ROOM */
 .room {
     display: none;
+    flex-shrink: 0;
     padding: 9px 12px;
     background: #128c7e;
     color: white;
+    font-size: 16px;
 }
 
+/* MESSAGES */
 #messages {
     flex: 1;
+    min-height: 0;
     padding: 12px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
+/* MESSAGE */
 .message {
-    padding: 9px 13px;
+    padding: 10px 14px;
     margin: 7px 0;
     border-radius: 10px;
     max-width: 78%;
     width: fit-content;
     word-wrap: break-word;
+    overflow-wrap: break-word;
     font-size: 16px;
+    color: #111;
 }
 
-/* APNA MESSAGE - RIGHT */
+/* APNA MESSAGE */
 .my-message {
     margin-left: auto;
+    margin-right: 0;
     background: #dcf8c6;
 }
 
-/* DUSRE KA MESSAGE - LEFT */
+/* DUSRE KA MESSAGE */
 .other-message {
+    margin-left: 0;
     margin-right: auto;
     background: white;
 }
 
+/* SEND AREA */
 .send {
+    flex-shrink: 0;
     display: none;
     padding: 9px;
     gap: 8px;
     background: #ddd;
+    padding-bottom: calc(9px + env(safe-area-inset-bottom));
 }
 
 .send input {
     flex: 1;
-    padding: 13px;
+    min-width: 0;
+    height: 48px;
+    padding: 0 16px;
     border: none;
     border-radius: 25px;
     outline: none;
-    font-size: 16px;
+    background: white;
+    color: #111;
+    font-size: 17px;
+}
+
+.send input::placeholder {
+    color: #777;
 }
 
 .send button {
-    padding: 0 18px;
+    flex-shrink: 0;
+    height: 48px;
+    padding: 0 19px;
     border: none;
     border-radius: 25px;
     background: #128c7e;
     color: white;
+    font-size: 16px;
     font-weight: bold;
+}
+
+/* MOBILE KEYBOARD FIX */
+@media (max-width: 600px) {
+
+    .chat {
+        max-width: none;
+    }
+
+    .header {
+        padding: 14px;
+        font-size: 22px;
+    }
+
+    .join {
+        padding: 8px;
+    }
+
+    .send {
+        padding: 8px;
+    }
+
+    .send input {
+        font-size: 16px;
+    }
 }
 </style>
 </head>
@@ -130,8 +196,15 @@ body {
     </div>
 
     <div class="join">
-        <input id="chatId" placeholder="Chat ID डालें">
-        <button onclick="joinChat()">Join</button>
+        <input
+            id="chatId"
+            type="text"
+            placeholder="Chat ID डालें"
+        >
+
+        <button onclick="joinChat()">
+            Join
+        </button>
     </div>
 
     <div class="room" id="roomName"></div>
@@ -139,65 +212,100 @@ body {
     <div id="messages"></div>
 
     <div class="send" id="sendBox">
-        <input id="message" placeholder="Message likho...">
-        <button onclick="sendMessage()">Send</button>
+
+        <input
+            id="message"
+            type="text"
+            placeholder="Message likho..."
+            autocomplete="off"
+        >
+
+        <button onclick="sendMessage()">
+            Send
+        </button>
+
     </div>
 
 </div>
 
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 
 <script>
 
 const firebaseConfig = {
+
     apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
+
     authDomain: "mychat-51ee7.firebaseapp.com",
+
     projectId: "mychat-51ee7",
+
     storageBucket: "mychat-51ee7.firebasestorage.app",
+
     messagingSenderId: "917061147739",
+
     appId: "1:917061147739:web:26644bb81926959325337e",
+
     measurementId: "G-SK11R1SYJ8"
 };
 
+
 firebase.initializeApp(firebaseConfig);
+
 
 const db = firebase.firestore();
 
+
 let currentChatId = "";
+
 let myUserId = "";
+
 let unsubscribe = null;
 
 
-/* HAR MOBILE KO ALAG ID */
+/* MOBILE KI UNIQUE ID */
+
 function getUserId() {
 
     let id = localStorage.getItem("myChatUserId");
 
     if (!id) {
 
-        id = "user_" +
-             Date.now() +
-             "_" +
-             Math.random()
+        id =
+            "user_" +
+            Date.now() +
+            "_" +
+            Math.random()
                 .toString(36)
                 .substring(2, 8);
 
-        localStorage.setItem("myChatUserId", id);
+        localStorage.setItem(
+            "myChatUserId",
+            id
+        );
     }
 
     return id;
 }
 
+
 myUserId = getUserId();
 
 
 /* JOIN CHAT */
+
 function joinChat() {
 
-    const input = document.getElementById("chatId");
+    const input =
+        document.getElementById("chatId");
 
-    const chatId = input.value.trim();
+    const chatId =
+        input.value.trim();
 
     if (chatId === "") {
 
@@ -206,48 +314,92 @@ function joinChat() {
         return;
     }
 
+
     currentChatId = chatId;
 
+
     if (unsubscribe) {
+
         unsubscribe();
+
+        unsubscribe = null;
     }
 
-    document.getElementById("roomName").style.display = "block";
 
-    document.getElementById("roomName").textContent =
+    document.getElementById(
+        "roomName"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "roomName"
+    ).textContent =
         "🔒 Chat ID: " + currentChatId;
 
-    document.getElementById("sendBox").style.display = "flex";
 
-    document.getElementById("messages").innerHTML = "";
+    document.getElementById(
+        "sendBox"
+    ).style.display = "flex";
+
 
     loadMessages();
+
+
+    /* MESSAGE BOX PAR FOCUS */
+
+    setTimeout(function() {
+
+        document
+            .getElementById("message")
+            .focus();
+
+    }, 300);
 }
 
 
-/* LOAD REAL-TIME MESSAGES */
+/* LOAD MESSAGES */
+
 function loadMessages() {
 
     const messages =
         document.getElementById("messages");
 
+
+    messages.innerHTML =
+        "<p style='text-align:center;color:#777;'>Messages load ho rahe hain...</p>";
+
+
     unsubscribe = db
+
         .collection("chats")
+
         .doc(currentChatId)
+
         .collection("messages")
+
         .onSnapshot(
 
             function(snapshot) {
 
                 messages.innerHTML = "";
 
+
+                if (snapshot.empty) {
+
+                    messages.innerHTML =
+                        "<p style='text-align:center;color:#777;'>Abhi koi message nahi hai.</p>";
+
+                    return;
+                }
+
+
                 let list = [];
+
 
                 snapshot.forEach(function(doc) {
 
-                    const data = doc.data();
+                    list.push(doc.data());
 
-                    list.push(data);
                 });
 
 
@@ -255,6 +407,7 @@ function loadMessages() {
 
                     return (a.time || 0) -
                            (b.time || 0);
+
                 });
 
 
@@ -263,11 +416,16 @@ function loadMessages() {
                     const div =
                         document.createElement("div");
 
-                    div.classList.add("message");
+
+                    div.classList.add(
+                        "message"
+                    );
 
 
-                    /* APNA YA DUSRE KA */
-                    if (data.senderId === myUserId) {
+                    if (
+                        data.senderId ===
+                        myUserId
+                    ) {
 
                         div.classList.add(
                             "my-message"
@@ -281,9 +439,12 @@ function loadMessages() {
                     }
 
 
-                    div.textContent = data.text;
+                    div.textContent =
+                        data.text || "";
+
 
                     messages.appendChild(div);
+
                 });
 
 
@@ -291,43 +452,59 @@ function loadMessages() {
                     messages.scrollHeight;
             },
 
+
             function(error) {
 
                 console.error(error);
 
+
                 messages.innerHTML =
-                    "<p style='color:red'>" +
+                    "<p style='color:red;padding:10px;'>" +
+                    "❌ Messages load nahi ho pa rahe.<br><br>" +
                     error.message +
                     "</p>";
+
             }
         );
 }
 
 
 /* SEND MESSAGE */
+
 function sendMessage() {
 
     const input =
         document.getElementById("message");
 
+
     const text =
         input.value.trim();
 
+
     if (text === "") {
+
         return;
     }
+
 
     if (currentChatId === "") {
 
-        alert("Pehle Chat ID Join karo");
+        alert(
+            "Pehle Chat ID Join karo"
+        );
 
         return;
     }
 
 
-    db.collection("chats")
+    db
+
+        .collection("chats")
+
         .doc(currentChatId)
+
         .collection("messages")
+
         .add({
 
             text: text,
@@ -337,6 +514,8 @@ function sendMessage() {
             time: Date.now()
 
         })
+
+
         .then(function() {
 
             input.value = "";
@@ -344,17 +523,21 @@ function sendMessage() {
             input.focus();
 
         })
+
+
         .catch(function(error) {
 
             alert(
                 "Message send nahi hua: " +
                 error.message
             );
+
         });
 }
 
 
-/* ENTER SE SEND */
+/* ENTER SE MESSAGE SEND */
+
 document
     .getElementById("message")
     .addEventListener(
@@ -363,10 +546,38 @@ document
 
             if (event.key === "Enter") {
 
+                event.preventDefault();
+
                 sendMessage();
             }
+
         }
     );
+
+
+/* KEYBOARD OPEN HONE PAR */
+
+if (window.visualViewport) {
+
+    window.visualViewport.addEventListener(
+        "resize",
+        function() {
+
+            setTimeout(function() {
+
+                const messages =
+                    document.getElementById(
+                        "messages"
+                    );
+
+                messages.scrollTop =
+                    messages.scrollHeight;
+
+            }, 100);
+
+        }
+    );
+}
 
 </script>
 
