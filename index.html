@@ -1,296 +1,522 @@
 <!DOCTYPE html>
 <html lang="hi">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <title>My Chat</title>
 
 <style>
-*{box-sizing:border-box}
 
-html,body{
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-    font-family:Arial,sans-serif;
-    background:#d9dbd5;
+* {
+    box-sizing: border-box;
 }
 
-body{overflow:hidden}
-
-.chat{
-    width:100%;
-    max-width:600px;
-    height:100dvh;
-    margin:auto;
-    display:flex;
-    flex-direction:column;
-    background:#efe7dd;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: #d9dbd5;
 }
 
-/* HEADER */
-.header{
-    flex-shrink:0;
-    padding:16px;
-    background:#075e54;
-    color:white;
-    font-size:23px;
-    font-weight:bold;
+body {
+    overflow: hidden;
 }
 
-/* JOIN */
-.join{
-    flex-shrink:0;
-    display:flex;
-    gap:8px;
-    padding:9px;
-    background:#075e54;
+.chat {
+    width: 100%;
+    max-width: 600px;
+    height: 100dvh;
+    margin: auto;
+    background: #efe7dd;
+    display: flex;
+    flex-direction: column;
 }
 
-#chatId{
-    flex:1;
-    min-width:0;
-    padding:13px;
-    border:0;
-    border-radius:9px;
-    outline:0;
-    font-size:16px;
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    flex-shrink: 0;
+    background: #075e54;
+    color: white;
+    padding: 16px;
+    font-size: 23px;
+    font-weight: bold;
 }
 
-#joinBtn{
-    padding:0 18px;
-    border:0;
-    border-radius:9px;
-    background:white;
-    color:#075e54;
-    font-weight:bold;
+
+/* =========================
+   JOIN
+========================= */
+
+.join {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    padding: 9px;
+    background: #075e54;
 }
 
-/* ROOM */
-#roomName{
-    display:none;
-    flex-shrink:0;
-    padding:9px 13px;
-    background:#128c7e;
-    color:white;
+#chatId {
+    flex: 1;
+    min-width: 0;
+    padding: 13px;
+    border: none;
+    border-radius: 9px;
+    outline: none;
+    font-size: 16px;
 }
 
-/* TYPING */
-#typingStatus{
-    flex-shrink:0;
-    height:24px;
-    padding:4px 14px 0;
-    background:#efe7dd;
-    color:#128c7e;
-    font-size:13px;
-    font-style:italic;
+#joinBtn {
+    padding: 0 18px;
+    border: none;
+    border-radius: 9px;
+    background: white;
+    color: #075e54;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-/* MESSAGES */
-#messages{
-    flex:1;
-    min-height:0;
-    padding:10px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
+
+/* =========================
+   ROOM
+========================= */
+
+#roomName {
+    display: none;
+    flex-shrink: 0;
+    background: #128c7e;
+    color: white;
+    padding: 9px 13px;
 }
 
-.message{
-    max-width:82%;
-    width:fit-content;
-    margin:4px 0;
-    padding:9px 13px;
-    border-radius:11px;
-    word-break:break-word;
-    font-size:16px;
-    line-height:1.35;
-    user-select:none;
-    -webkit-user-select:none;
+
+/* =========================
+   TYPING
+========================= */
+
+#typingStatus {
+    height: 24px;
+    flex-shrink: 0;
+    padding: 4px 14px 0;
+    background: #efe7dd;
+    color: #128c7e;
+    font-size: 13px;
+    font-style: italic;
 }
 
-.my-message{
-    align-self:flex-end;
-    background:#dcf8c6;
-    border-bottom-right-radius:3px;
+
+/* =========================
+   SELECT BAR
+========================= */
+
+#selectBar {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #075e54;
+    color: white;
 }
 
-.other-message{
-    align-self:flex-start;
-    background:white;
-    border-bottom-left-radius:3px;
+#selectedCount {
+    flex: 1;
+    font-weight: bold;
 }
 
-.edited{
-    margin-left:6px;
-    color:#777;
-    font-size:11px;
+#deleteSelectedBtn {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 12px;
+    background: #d32f2f;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-/* EDIT BAR */
-#editBar{
-    display:none;
-    flex-shrink:0;
-    padding:8px 12px;
-    background:#e8e8e8;
-    border-left:4px solid #128c7e;
+#cancelSelectBtn {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 12px;
+    background: white;
+    color: #075e54;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-#editBar span{
-    color:#075e54;
-    font-size:14px;
+
+/* =========================
+   MESSAGES
+========================= */
+
+#messages {
+    flex: 1;
+    min-height: 0;
+    padding: 10px;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
-#cancelEdit{
-    float:right;
-    border:0;
-    background:transparent;
-    font-size:18px;
-    color:#777;
+.messageRow {
+    display: flex;
+    width: 100%;
+    margin: 3px 0;
+    align-items: center;
+    gap: 7px;
 }
 
-/* SEND */
-.send{
-    flex-shrink:0;
-    display:flex;
-    gap:8px;
-    padding:9px;
-    padding-bottom:calc(9px + env(safe-area-inset-bottom));
-    background:#ddd;
+.myRow {
+    justify-content: flex-end;
 }
 
-#message{
-    flex:1;
-    min-width:0;
-    height:48px;
-    padding:0 16px;
-    border:0;
-    border-radius:25px;
-    outline:0;
-    background:white;
-    color:#111;
-    font-size:16px;
+.otherRow {
+    justify-content: flex-start;
 }
 
-#sendBtn{
-    flex-shrink:0;
-    height:48px;
-    padding:0 18px;
-    border:0;
-    border-radius:25px;
-    background:#128c7e;
-    color:white;
-    font-weight:bold;
+.selectBox {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    cursor: pointer;
 }
 
-#sendBtn:disabled{
-    background:#999;
+.message {
+    position: relative;
+    max-width: 82%;
+    width: fit-content;
+
+    padding: 9px 13px;
+    border-radius: 11px;
+
+    word-break: break-word;
+    overflow-wrap: anywhere;
+
+    font-size: 16px;
+    line-height: 1.35;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    cursor: default;
 }
 
-/* LONG PRESS MENU */
-#messageMenu{
-    display:none;
-    position:fixed;
-    z-index:9999;
-    width:150px;
-    overflow:hidden;
-    border-radius:10px;
-    background:white;
-    box-shadow:0 4px 18px rgba(0,0,0,.25);
+.my-message {
+    background: #dcf8c6;
+    border-bottom-right-radius: 3px;
 }
 
-#messageMenu button{
-    display:block;
-    width:100%;
-    padding:14px;
-    border:0;
-    background:white;
-    text-align:left;
-    font-size:16px;
+.other-message {
+    background: white;
+    border-bottom-left-radius: 3px;
 }
 
-#messageMenu button:active{
-    background:#eee;
+.selectedMessage {
+    outline: 3px solid #128c7e;
 }
 
-@media(max-width:600px){
-    .message{max-width:85%}
+.edited {
+    margin-left: 6px;
+    color: #777;
+    font-size: 11px;
 }
+
+
+/* =========================
+   EDIT BAR
+========================= */
+
+#editBar {
+    display: none;
+    flex-shrink: 0;
+    background: #e8e8e8;
+    padding: 8px 12px;
+    border-left: 4px solid #128c7e;
+}
+
+#editBar span {
+    color: #075e54;
+    font-size: 14px;
+}
+
+#cancelEdit {
+    float: right;
+    border: none;
+    background: transparent;
+    color: #777;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   SEND
+========================= */
+
+.send {
+    flex-shrink: 0;
+
+    display: flex;
+    gap: 8px;
+
+    padding: 9px;
+
+    padding-bottom:
+        calc(9px + env(safe-area-inset-bottom));
+
+    background: #ddd;
+}
+
+#message {
+    flex: 1;
+    min-width: 0;
+
+    height: 48px;
+
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 25px;
+
+    outline: none;
+
+    background: white;
+    color: #111;
+
+    font-size: 16px;
+}
+
+#sendBtn {
+    flex-shrink: 0;
+
+    height: 48px;
+
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 25px;
+
+    background: #128c7e;
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#sendBtn:disabled {
+    background: #999;
+}
+
+
+/* =========================
+   MESSAGE MENU
+========================= */
+
+#messageMenu {
+    display: none;
+
+    position: fixed;
+
+    z-index: 99999;
+
+    width: 165px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+#messageMenu button {
+    display: block;
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    background: white;
+
+    text-align: left;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+#messageMenu button:hover {
+    background: #eeeeee;
+}
+
+#messageMenu button:active {
+    background: #dddddd;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .message {
+        max-width: 85%;
+    }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="chat">
 
-    <div class="header">
-        💬 My Chat
-    </div>
 
-    <div class="join">
+<!-- HEADER -->
 
-        <input
-            id="chatId"
-            type="text"
-            placeholder="Chat ID डालें"
-            autocomplete="off"
-        >
+<div class="header">
+    💬 My Chat
+</div>
 
-        <button
-            type="button"
-            id="joinBtn"
-            onclick="joinChat()"
-        >
-            Join
-        </button>
 
-    </div>
+<!-- JOIN -->
 
-    <div id="roomName"></div>
+<div class="join">
 
-    <div id="typingStatus"></div>
+    <input
+        id="chatId"
+        type="text"
+        placeholder="Chat ID डालें"
+        autocomplete="off"
+    >
 
-    <div id="messages"></div>
-
-    <div id="editBar">
-        <span>✏️ Message edit कर रहे हैं</span>
-        <button
-            type="button"
-            id="cancelEdit"
-            onclick="cancelEdit()"
-        >✕</button>
-    </div>
-
-    <div class="send">
-
-        <input
-            id="message"
-            type="text"
-            placeholder="Message likho..."
-            disabled
-            autocomplete="off"
-            oninput="typing()"
-            onkeydown="handleEnter(event)"
-        >
-
-        <button
-            type="button"
-            id="sendBtn"
-            onclick="sendMessage()"
-            disabled
-        >
-            Send
-        </button>
-
-    </div>
+    <button
+        type="button"
+        id="joinBtn"
+        onclick="joinChat()"
+    >
+        Join
+    </button>
 
 </div>
 
 
-<!-- EDIT / DELETE MENU -->
+<!-- ROOM -->
+
+<div id="roomName"></div>
+
+
+<!-- TYPING -->
+
+<div id="typingStatus"></div>
+
+
+<!-- SELECT BAR -->
+
+<div id="selectBar">
+
+    <span id="selectedCount">
+        0 selected
+    </span>
+
+    <button
+        type="button"
+        id="deleteSelectedBtn"
+        onclick="deleteSelectedMessages()"
+    >
+        🗑️ Delete
+    </button>
+
+    <button
+        type="button"
+        id="cancelSelectBtn"
+        onclick="cancelSelection()"
+    >
+        ✕
+    </button>
+
+</div>
+
+
+<!-- MESSAGES -->
+
+<div id="messages"></div>
+
+
+<!-- EDIT BAR -->
+
+<div id="editBar">
+
+    <span>
+        ✏️ Message edit कर रहे हैं
+    </span>
+
+    <button
+        type="button"
+        id="cancelEdit"
+        onclick="cancelEdit()"
+    >
+        ✕
+    </button>
+
+</div>
+
+
+<!-- SEND -->
+
+<div class="send">
+
+    <input
+        id="message"
+        type="text"
+        placeholder="Message likho..."
+        disabled
+        autocomplete="off"
+        oninput="typing()"
+        onkeydown="handleEnter(event)"
+    >
+
+    <button
+        type="button"
+        id="sendBtn"
+        onclick="sendMessage()"
+        disabled
+    >
+        Send
+    </button>
+
+</div>
+
+
+</div>
+
+
+<!-- MESSAGE MENU -->
+
 <div id="messageMenu">
 
     <button
@@ -302,46 +528,82 @@ body{overflow:hidden}
 
     <button
         type="button"
-        onclick="deleteSelectedMessage()"
+        onclick="deleteSingleMessage()"
     >
         🗑️ Delete
+    </button>
+
+    <button
+        type="button"
+        onclick="startSelectionFromMenu()"
+    >
+        ☑️ Select
     </button>
 
 </div>
 
 
 <!-- FIREBASE -->
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 
 <script>
 
-/* FIREBASE */
+
+/* =========================
+   FIREBASE
+========================= */
 
 const firebaseConfig = {
-    apiKey:"AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
-    authDomain:"mychat-51ee7.firebaseapp.com",
-    projectId:"mychat-51ee7",
-    storageBucket:"mychat-51ee7.firebasestorage.app",
-    messagingSenderId:"917061147739",
-    appId:"1:917061147739:web:26644bb81926959325337e",
-    measurementId:"G-SK11R1SYJ8"
+
+    apiKey:
+        "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
+
+    authDomain:
+        "mychat-51ee7.firebaseapp.com",
+
+    projectId:
+        "mychat-51ee7",
+
+    storageBucket:
+        "mychat-51ee7.firebasestorage.app",
+
+    messagingSenderId:
+        "917061147739",
+
+    appId:
+        "1:917061147739:web:26644bb81926959325337e",
+
+    measurementId:
+        "G-SK11R1SYJ8"
 };
+
 
 firebase.initializeApp(firebaseConfig);
 
-const db=firebase.firestore();
+const db = firebase.firestore();
 
 
-/* USER ID */
+/* =========================
+   USER ID
+========================= */
 
-let myUserId=localStorage.getItem("myChatUserId");
+let myUserId =
+    localStorage.getItem("myChatUserId");
 
-if(!myUserId){
 
-    myUserId=
-        "user_"+Date.now()+"_"+
-        Math.random().toString(36).substring(2,9);
+if (!myUserId) {
+
+    myUserId =
+        "user_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 9);
 
     localStorage.setItem(
         "myChatUserId",
@@ -350,104 +612,172 @@ if(!myUserId){
 }
 
 
-/* VARIABLES */
+/* =========================
+   VARIABLES
+========================= */
 
-let currentChatId="";
-let unsubscribeMessages=null;
-let unsubscribeTyping=null;
-let typingTimer=null;
+let currentChatId = "";
 
-let selectedMessageId=null;
-let selectedMessageData=null;
-let editingMessageId=null;
+let unsubscribeMessages = null;
+
+let unsubscribeTyping = null;
+
+let typingTimer = null;
+
+let selectedMessageId = null;
+
+let selectedMessageData = null;
+
+let editingMessageId = null;
 
 
-/* JOIN */
+/* MULTI SELECT */
 
-function joinChat(){
+let selectionMode = false;
 
-    const chatId=
-        document.getElementById("chatId")
-        .value.trim();
+let selectedMessages = new Set();
 
-    if(!chatId){
+
+/* =========================
+   JOIN CHAT
+========================= */
+
+function joinChat() {
+
+    const chatInput =
+        document.getElementById("chatId");
+
+    const chatId =
+        chatInput.value.trim();
+
+
+    if (chatId === "") {
+
         alert("Chat ID डालें");
+
         return;
     }
 
-    currentChatId=chatId;
 
-    if(unsubscribeMessages){
+    currentChatId = chatId;
+
+
+    if (unsubscribeMessages) {
+
         unsubscribeMessages();
+
+        unsubscribeMessages = null;
     }
 
-    if(unsubscribeTyping){
+
+    if (unsubscribeTyping) {
+
         unsubscribeTyping();
+
+        unsubscribeTyping = null;
     }
 
-    document.getElementById("roomName").style.display="block";
 
-    document.getElementById("roomName").textContent=
-        "🔒 Chat ID: "+currentChatId;
+    document.getElementById(
+        "roomName"
+    ).style.display = "block";
 
-    document.getElementById("message").disabled=false;
 
-    document.getElementById("sendBtn").disabled=false;
+    document.getElementById(
+        "roomName"
+    ).textContent =
+        "🔒 Chat ID: " +
+        currentChatId;
+
+
+    document.getElementById(
+        "message"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "sendBtn"
+    ).disabled = false;
+
 
     loadMessages();
 
     watchTyping();
 
-    setTimeout(()=>{
-        document.getElementById("message").focus();
-    },100);
+
+    setTimeout(() => {
+
+        document.getElementById(
+            "message"
+        ).focus();
+
+    }, 100);
+
 }
 
 
-/* SEND */
+/* =========================
+   SEND MESSAGE
+========================= */
 
-function sendMessage(){
+function sendMessage() {
 
-    const input=
+    const input =
         document.getElementById("message");
 
-    const text=input.value.trim();
+    const text =
+        input.value.trim();
 
-    if(!text)return;
 
-    if(!currentChatId){
-        alert("Pehle Join karo");
+    if (text === "") {
+
         return;
     }
 
 
-    /* EDIT */
+    if (currentChatId === "") {
 
-    if(editingMessageId){
+        alert("Pehle Join karo");
+
+        return;
+    }
+
+
+    /* EDIT MODE */
+
+    if (editingMessageId) {
 
         db.collection("messages")
-        .doc(editingMessageId)
-        .update({
+            .doc(editingMessageId)
+            .update({
 
-            text:text,
-            edited:true,
-            editedAt:
-                firebase.firestore.FieldValue
-                .serverTimestamp()
+                text: text,
 
-        })
-        .then(()=>{
+                edited: true,
 
-            input.value="";
+                editedAt:
+                    firebase.firestore
+                        .FieldValue
+                        .serverTimestamp()
 
-            cancelEdit();
+            })
+            .then(() => {
 
-            keepInputFocus();
+                input.value = "";
 
-        })
-        .catch(error=>{
-            alert("Edit nahi hua: "+error.message);
-        });
+                cancelEdit();
+
+                keepFocus();
+
+            })
+            .catch((error) => {
+
+                alert(
+                    "Edit nahi hua: " +
+                    error.message
+                );
+
+            });
 
         return;
     }
@@ -456,546 +786,608 @@ function sendMessage(){
     /* NEW MESSAGE */
 
     db.collection("messages")
-    .add({
+        .add({
 
-        chatId:currentChatId,
-        text:text,
-        sender:myUserId,
-        edited:false,
+            chatId:
+                currentChatId,
 
-        createdAt:
-            firebase.firestore.FieldValue
-            .serverTimestamp()
+            text:
+                text,
 
-    })
-    .then(()=>{
+            sender:
+                myUserId,
 
-        input.value="";
+            edited:
+                false,
 
-        stopTyping();
+            createdAt:
+                firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
 
-        /*
-         * IMPORTANT:
-         * Send ke baad input ko
-         * active rakho.
-         */
+        })
+        .then(() => {
 
-        keepInputFocus();
+            input.value = "";
 
-    })
-    .catch(error=>{
+            stopTyping();
 
-        alert(
-            "Message send nahi hua: "+
-            error.message
-        );
+            keepFocus();
 
-        keepInputFocus();
+        })
+        .catch((error) => {
 
-    });
+            alert(
+                "Message send nahi hua: " +
+                error.message
+            );
+
+        });
+
 }
 
 
-/* KEEP INPUT ACTIVE */
+/* =========================
+   KEEP INPUT ACTIVE
+========================= */
 
-function keepInputFocus(){
+function keepFocus() {
 
-    const input=
+    const input =
         document.getElementById("message");
 
-    if(input.disabled)return;
+
+    if (input.disabled) {
+
+        return;
+    }
+
 
     input.focus();
 
-    /*
-     * Mobile browser me focus
-     * maintain karne ki extra koshish.
-     */
 
-    setTimeout(()=>{
-        input.focus();
-    },50);
+    setTimeout(() => {
 
-    setTimeout(()=>{
         input.focus();
-    },200);
+
+    }, 50);
+
 }
 
 
-/* LOAD MESSAGES */
+/* =========================
+   LOAD MESSAGES
+========================= */
 
-function loadMessages(){
+function loadMessages() {
 
-    const messages=
+    const messages =
         document.getElementById("messages");
 
-    unsubscribeMessages=
+
+    unsubscribeMessages =
         db.collection("messages")
-        .where(
-            "chatId",
-            "==",
-            currentChatId
-        )
-        .onSnapshot(
 
-            snapshot=>{
+            .where(
+                "chatId",
+                "==",
+                currentChatId
+            )
 
-                messages.innerHTML="";
+            .onSnapshot(
 
-                let list=[];
+                (snapshot) => {
 
-                snapshot.forEach(doc=>{
+                    messages.innerHTML = "";
 
-                    list.push({
-                        id:doc.id,
-                        ...doc.data()
+                    let list = [];
+
+
+                    snapshot.forEach((doc) => {
+
+                        list.push({
+
+                            id:
+                                doc.id,
+
+                            ...doc.data()
+
+                        });
+
                     });
 
-                });
+
+                    list.sort((a, b) => {
+
+                        const aTime =
+                            a.createdAt
+                                ? a.createdAt.toMillis()
+                                : 0;
+
+                        const bTime =
+                            b.createdAt
+                                ? b.createdAt.toMillis()
+                                : 0;
+
+                        return aTime - bTime;
+
+                    });
 
 
-                list.sort((a,b)=>{
+                    list.forEach((msg) => {
 
-                    const aTime=
-                        a.createdAt
-                        ? a.createdAt.toMillis()
-                        : 0;
-
-                    const bTime=
-                        b.createdAt
-                        ? b.createdAt.toMillis()
-                        : 0;
-
-                    return aTime-bTime;
-
-                });
-
-
-                list.forEach(msg=>{
-
-                    const div=
-                        document.createElement("div");
-
-                    div.className="message";
-
-
-                    if(msg.sender===myUserId){
-
-                        div.classList.add(
-                            "my-message"
+                        createMessageElement(
+                            msg,
+                            messages
                         );
 
-                    }else{
-
-                        div.classList.add(
-                            "other-message"
-                        );
-
-                    }
+                    });
 
 
-                    div.textContent=
-                        msg.text||"";
+                    messages.scrollTop =
+                        messages.scrollHeight;
+
+                },
+
+                (error) => {
+
+                    console.error(error);
+
+                    messages.innerHTML =
+                        "<div style='color:red;padding:15px'>" +
+                        "Messages load nahi ho pa rahe." +
+                        "</div>";
+
+                }
+
+            );
+
+}
 
 
-                    if(msg.edited){
+/* =========================
+   CREATE MESSAGE
+========================= */
 
-                        const edited=
-                            document.createElement("span");
+function createMessageElement(
+    msg,
+    container
+) {
 
-                        edited.className="edited";
-
-                        edited.textContent="edited";
-
-                        div.appendChild(edited);
-
-                    }
-
-
-                    /* LONG PRESS
-                       ONLY OWN MESSAGE */
-
-                    if(msg.sender===myUserId){
-
-                        addLongPress(
-                            div,
-                            msg.id,
-                            msg
-                        );
-
-                    }
+    const row =
+        document.createElement("div");
 
 
-                    messages.appendChild(div);
+    row.className =
+        "messageRow";
 
-                });
+
+    if (msg.sender === myUserId) {
+
+        row.classList.add("myRow");
+
+    } else {
+
+        row.classList.add("otherRow");
+
+    }
 
 
-                messages.scrollTop=
-                    messages.scrollHeight;
+    /* CHECKBOX */
 
-            },
+    if (
+        selectionMode &&
+        msg.sender === myUserId
+    ) {
 
-            error=>{
+        const checkbox =
+            document.createElement("input");
 
-                console.error(error);
+        checkbox.type =
+            "checkbox";
 
-                messages.innerHTML=
-                    "<div style='color:red;padding:15px'>"+
-                    "Messages load nahi ho pa rahe."+
-                    "</div>";
+        checkbox.className =
+            "selectBox";
+
+        checkbox.checked =
+            selectedMessages.has(
+                msg.id
+            );
+
+
+        checkbox.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
 
             }
         );
+
+
+        checkbox.addEventListener(
+            "change",
+            function() {
+
+                if (this.checked) {
+
+                    selectedMessages.add(
+                        msg.id
+                    );
+
+                } else {
+
+                    selectedMessages.delete(
+                        msg.id
+                    );
+
+                }
+
+
+                updateSelectionBar();
+
+            }
+        );
+
+
+        row.appendChild(
+            checkbox
+        );
+
+    }
+
+
+    /* MESSAGE */
+
+    const div =
+        document.createElement("div");
+
+
+    div.className =
+        "message";
+
+
+    if (msg.sender === myUserId) {
+
+        div.classList.add(
+            "my-message"
+        );
+
+    } else {
+
+        div.classList.add(
+            "other-message"
+        );
+
+    }
+
+
+    if (
+        selectedMessages.has(
+            msg.id
+        )
+    ) {
+
+        div.classList.add(
+            "selectedMessage"
+        );
+
+    }
+
+
+    div.textContent =
+        msg.text || "";
+
+
+    /* EDITED */
+
+    if (msg.edited) {
+
+        const edited =
+            document.createElement("span");
+
+        edited.className =
+            "edited";
+
+        edited.textContent =
+            "edited";
+
+        div.appendChild(
+            edited
+        );
+
+    }
+
+
+    /* SELECT MODE */
+
+    if (
+        selectionMode &&
+        msg.sender === myUserId
+    ) {
+
+        div.addEventListener(
+            "click",
+            function() {
+
+                if (
+                    selectedMessages.has(
+                        msg.id
+                    )
+                ) {
+
+                    selectedMessages.delete(
+                        msg.id
+                    );
+
+                } else {
+
+                    selectedMessages.add(
+                        msg.id
+                    );
+
+                }
+
+
+                updateSelectionBar();
+
+                loadMessages();
+
+            }
+        );
+
+    }
+
+
+    /* NORMAL MODE */
+
+    if (
+        !selectionMode &&
+        msg.sender === myUserId
+    ) {
+
+        addMessageActions(
+            div,
+            msg.id,
+            msg
+        );
+
+    }
+
+
+    row.appendChild(div);
+
+    container.appendChild(row);
+
 }
 
 
-/* LONG PRESS */
+/* =========================
+   MESSAGE ACTIONS
+   LAPTOP RIGHT CLICK
+   MOBILE LONG PRESS
+========================= */
 
-function addLongPress(
+function addMessageActions(
     element,
     messageId,
     messageData
-){
+) {
 
-    let timer=null;
-
-
-    function start(event){
-
-        timer=setTimeout(()=>{
-
-            selectedMessageId=messageId;
-
-            selectedMessageData=messageData;
-
-            showMessageMenu(event);
-
-        },600);
-
-    }
+    let timer = null;
 
 
-    function cancel(){
-
-        clearTimeout(timer);
-
-    }
-
+    /* =====================
+       LAPTOP RIGHT CLICK
+    ===================== */
 
     element.addEventListener(
-        "touchstart",
-        start,
-        {passive:true}
-    );
-
-    element.addEventListener(
-        "touchend",
-        cancel
-    );
-
-    element.addEventListener(
-        "touchmove",
-        cancel
-    );
-
-
-    element.addEventListener(
-        "mousedown",
-        start
-    );
-
-    element.addEventListener(
-        "mouseup",
-        cancel
-    );
-
-    element.addEventListener(
-        "mouseleave",
-        cancel
-    );
-}
-
-
-/* MENU */
-
-function showMessageMenu(event){
-
-    const menu=
-        document.getElementById("messageMenu");
-
-    menu.style.display="block";
-
-
-    let x=20;
-    let y=100;
-
-
-    if(event.touches && event.touches.length){
-
-        x=event.touches[0].clientX;
-        y=event.touches[0].clientY;
-
-    }else if(event.clientX){
-
-        x=event.clientX;
-        y=event.clientY;
-
-    }
-
-
-    if(x+150>window.innerWidth){
-
-        x=window.innerWidth-160;
-
-    }
-
-    if(y+100>window.innerHeight){
-
-        y=window.innerHeight-110;
-
-    }
-
-
-    menu.style.left=x+"px";
-    menu.style.top=y+"px";
-}
-
-
-/* EDIT */
-
-function editSelectedMessage(){
-
-    if(!selectedMessageId)return;
-
-    const input=
-        document.getElementById("message");
-
-    input.value=
-        selectedMessageData.text||"";
-
-    editingMessageId=
-        selectedMessageId;
-
-    document.getElementById(
-        "editBar"
-    ).style.display="block";
-
-    closeMessageMenu();
-
-    keepInputFocus();
-}
-
-
-/* DELETE */
-
-function deleteSelectedMessage(){
-
-    if(!selectedMessageId)return;
-
-    const ok=confirm(
-        "Kya aap ye message delete karna chahte hain?"
-    );
-
-    if(!ok){
-
-        closeMessageMenu();
-        return;
-
-    }
-
-
-    db.collection("messages")
-    .doc(selectedMessageId)
-    .delete()
-    .then(()=>{
-
-        closeMessageMenu();
-
-    })
-    .catch(error=>{
-
-        alert(
-            "Message delete nahi hua: "+
-            error.message
-        );
-
-    });
-}
-
-
-/* CANCEL EDIT */
-
-function cancelEdit(){
-
-    editingMessageId=null;
-
-    document.getElementById(
-        "message"
-    ).value="";
-
-    document.getElementById(
-        "editBar"
-    ).style.display="none";
-
-    keepInputFocus();
-}
-
-
-/* CLOSE MENU */
-
-function closeMessageMenu(){
-
-    document.getElementById(
-        "messageMenu"
-    ).style.display="none";
-
-    selectedMessageId=null;
-    selectedMessageData=null;
-}
-
-
-/* OUTSIDE MENU */
-
-document.addEventListener(
-    "click",
-    event=>{
-
-        const menu=
-            document.getElementById(
-                "messageMenu"
-            );
-
-        if(
-            menu.style.display==="block" &&
-            !menu.contains(event.target)
-        ){
-
-            closeMessageMenu();
-
-        }
-
-    }
-);
-
-
-/* TYPING */
-
-function typing(){
-
-    if(!currentChatId)return;
-
-    db.collection("typing")
-    .doc(currentChatId)
-    .set({
-
-        userId:myUserId,
-        typing:true,
-
-        time:
-            firebase.firestore.FieldValue
-            .serverTimestamp()
-
-    });
-
-    clearTimeout(typingTimer);
-
-    typingTimer=
-        setTimeout(
-            stopTyping,
-            1500
-        );
-}
-
-
-/* STOP TYPING */
-
-function stopTyping(){
-
-    if(!currentChatId)return;
-
-    db.collection("typing")
-    .doc(currentChatId)
-    .set({
-
-        userId:myUserId,
-        typing:false,
-
-        time:
-            firebase.firestore.FieldValue
-            .serverTimestamp()
-
-    });
-}
-
-
-/* WATCH TYPING */
-
-function watchTyping(){
-
-    const status=
-        document.getElementById(
-            "typingStatus"
-        );
-
-    unsubscribeTyping=
-        db.collection("typing")
-        .doc(currentChatId)
-        .onSnapshot(doc=>{
-
-            const data=doc.data();
-
-            if(
-                data &&
-                data.typing===true &&
-                data.userId!==myUserId
-            ){
-
-                status.textContent="typing...";
-
-            }else{
-
-                status.textContent="";
-
-            }
-
-        });
-}
-
-
-/* ENTER */
-
-function handleEnter(event){
-
-    if(event.key==="Enter"){
-
-        event.preventDefault();
-
-        sendMessage();
-
-    }
-}
-
-
-/* CHAT ID ENTER */
-
-document.getElementById("chatId")
-.addEventListener(
-    "keydown",
-    event=>{
-
-        if(event.key==="Enter"){
+        "contextmenu",
+        function(event) {
 
             event.preventDefault();
 
-            joinChat();
+            selectedMessageId =
+                messageId;
+
+            selectedMessageData =
+                messageData;
+
+            showMessageMenu(event);
 
         }
+    );
+
+
+    /* =====================
+       MOBILE LONG PRESS
+    ===================== */
+
+    element.addEventListener(
+        "touchstart",
+        function(event) {
+
+            timer =
+                setTimeout(() => {
+
+                    selectedMessageId =
+                        messageId;
+
+                    selectedMessageData =
+                        messageData;
+
+                    showMessageMenu(
+                        event
+                    );
+
+                }, 600);
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    element.addEventListener(
+        "touchend",
+        function() {
+
+            clearTimeout(timer);
+
+        }
+    );
+
+
+    element.addEventListener(
+        "touchmove",
+        function() {
+
+            clearTimeout(timer);
+
+        }
+    );
+
+}
+
+
+/* =========================
+   SHOW MENU
+========================= */
+
+function showMessageMenu(event) {
+
+    const menu =
+        document.getElementById(
+            "messageMenu"
+        );
+
+
+    menu.style.display =
+        "block";
+
+
+    let x = 20;
+
+    let y = 100;
+
+
+    if (
+        event &&
+        event.touches &&
+        event.touches.length
+    ) {
+
+        x =
+            event.touches[0]
+                .clientX;
+
+        y =
+            event.touches[0]
+                .clientY;
+
+    } else if (event) {
+
+        x =
+            event.clientX;
+
+        y =
+            event.clientY;
 
     }
-);
 
-</script>
 
-</body>
-</html>
+    if (
+        x + 165 >
+        window.innerWidth
+    ) {
+
+        x =
+            window.innerWidth - 175;
+
+    }
+
+
+    if (
+        y + 150 >
+        window.innerHeight
+    ) {
+
+        y =
+            window.innerHeight - 160;
+
+    }
+
+
+    menu.style.left =
+        x + "px";
+
+    menu.style.top =
+        y + "px";
+
+}
+
+
+/* =========================
+   EDIT MESSAGE
+========================= */
+
+function editSelectedMessage() {
+
+    if (!selectedMessageId) {
+
+        return;
+    }
+
+
+    const input =
+        document.getElementById(
+            "message"
+        );
+
+
+    input.value =
+        selectedMessageData.text ||
+        "";
+
+
+    editingMessageId =
+        selectedMessageId;
+
+
+    document.getElementById(
+        "editBar"
+    ).style.display =
+        "block";
+
+
+    closeMessageMenu();
+
+    keepFocus();
+
+}
+
+
+/* =========================
+   DELETE ONE MESSAGE
+========================= */
+
+function deleteSingleMessage() {
+
+    if (!selectedMessageId) {
+
+        return;
+    }
+
+
+    const ok =
+        confirm(
+            "Ye message delete karna hai?"
+        );
+
+
+    if (!ok) {
+
+        closeMessageMenu();
+
+        return;
