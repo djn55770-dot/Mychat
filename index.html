@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
+
 <head>
-    <title>My Chat App</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Chat App</title>
 
     <style>
         * {
@@ -17,10 +20,10 @@
 
         .chat {
             width: 100%;
-            max-width: 560px;
+            max-width: 600px;
             height: 100vh;
             margin: auto;
-            background: white;
+            background: #efe7dd;
             display: flex;
             flex-direction: column;
         }
@@ -28,42 +31,43 @@
         .header {
             background: #075e54;
             color: white;
-            padding: 16px;
-            font-size: 22px;
+            padding: 18px;
+            font-size: 24px;
             font-weight: bold;
         }
 
         .join {
             display: flex;
+            gap: 8px;
             padding: 10px;
-            background: #075e54;
+            background: #128c7e;
         }
 
         #chatId {
             flex: 1;
-            padding: 13px;
+            padding: 14px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 17px;
             outline: none;
         }
 
         #joinBtn {
-            margin-left: 8px;
-            padding: 12px 18px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             background: white;
             color: #075e54;
+            font-size: 17px;
             font-weight: bold;
         }
 
         #roomName {
-            padding: 8px 15px;
-            background: #128c7e;
-            color: white;
-            font-size: 14px;
             display: none;
+            background: #25a095;
+            color: white;
+            padding: 12px;
+            font-size: 17px;
         }
 
         #messages {
@@ -86,13 +90,14 @@
 
         .send {
             display: flex;
+            gap: 8px;
             padding: 10px;
             background: #ddd;
         }
 
         #message {
             flex: 1;
-            padding: 13px;
+            padding: 14px;
             border-radius: 25px;
             border: none;
             outline: none;
@@ -100,13 +105,18 @@
         }
 
         #sendBtn {
-            margin-left: 8px;
-            padding: 12px 18px;
+            padding: 12px 20px;
             border: none;
             border-radius: 25px;
             background: #128c7e;
             color: white;
             font-weight: bold;
+            font-size: 16px;
+        }
+
+        #message:disabled,
+        #sendBtn:disabled {
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -120,8 +130,20 @@
     </div>
 
     <div class="join">
-        <input id="chatId" placeholder="Chat ID डालें">
-        <button id="joinBtn" onclick="joinChat()">Join</button>
+
+        <input
+            id="chatId"
+            type="text"
+            placeholder="Chat ID डालें"
+        >
+
+        <button
+            id="joinBtn"
+            onclick="joinChat()"
+        >
+            Join
+        </button>
+
     </div>
 
     <div id="roomName"></div>
@@ -129,160 +151,298 @@
     <div id="messages"></div>
 
     <div class="send">
-        <input id="message" placeholder="Message likho..." disabled>
-        <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+
+        <input
+            id="message"
+            type="text"
+            placeholder="पहले Chat ID Join करें..."
+            disabled
+        >
+
+        <button
+            id="sendBtn"
+            onclick="sendMessage()"
+            disabled
+        >
+            Send
+        </button>
+
     </div>
 
 </div>
 
+
 <!-- Firebase -->
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 
 <script>
 
 const firebaseConfig = {
+
     apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
+
     authDomain: "mychat-51ee7.firebaseapp.com",
+
     projectId: "mychat-51ee7",
+
     storageBucket: "mychat-51ee7.firebasestorage.app",
+
     messagingSenderId: "917061147739",
+
     appId: "1:917061147739:web:26644bb81926959325337e",
+
     measurementId: "G-SK11R1SYJ8"
 };
+
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
+
 let currentChatId = "";
+
 let unsubscribe = null;
 
 
-// Chat join karna
+
+// ==========================
+// JOIN CHAT
+// ==========================
+
 function joinChat() {
 
     const input = document.getElementById("chatId");
+
     const chatId = input.value.trim();
 
+
     if (chatId === "") {
+
         alert("Chat ID डालें");
+
         return;
     }
 
-    currentChatId = chatId;
-
-
-// Real-time messages
-function joinChat() {
-    const input = document.getElementById("chatId");
-    const chatId = input.value.trim();
-
-    if (chatId === "") {
-        alert("Chat ID डालें");
-        return;
-    }
 
     currentChatId = chatId;
+
 
     // Purana listener band karo
+
     if (unsubscribe) {
+
         unsubscribe();
+
         unsubscribe = null;
     }
 
-    // Room name dikhao
+
+    // Room name
+
     document.getElementById("roomName").style.display = "block";
+
     document.getElementById("roomName").textContent =
         "🔒 Chat ID: " + currentChatId;
 
-    // Message input enable
+
+    // Message box enable
+
     document.getElementById("message").disabled = false;
+
     document.getElementById("sendBtn").disabled = false;
 
-    // Messages load karo
+
+    document.getElementById("message").placeholder =
+        "Message likho...";
+
+
+    // Messages clear
+
+    document.getElementById("messages").innerHTML = "";
+
+
+    // Firebase real-time listener
+
     unsubscribe = db.collection("messages")
+
         .where("chatId", "==", currentChatId)
-        .orderBy("createdAt", "asc")
+
         .onSnapshot(
+
             (snapshot) => {
-                const messages = document.getElementById("messages");
+
+                const messages =
+                    document.getElementById("messages");
+
+
                 messages.innerHTML = "";
 
+
+                let list = [];
+
+
                 snapshot.forEach((doc) => {
+
                     const data = doc.data();
 
-                    const div = document.createElement("div");
+
+                    list.push({
+
+                        text: data.text || "",
+
+                        createdAt: data.createdAt
+                    });
+
+                });
+
+
+                // Time ke hisaab se sort
+
+                list.sort((a, b) => {
+
+                    const timeA =
+                        a.createdAt
+                            ? a.createdAt.toMillis()
+                            : 0;
+
+                    const timeB =
+                        b.createdAt
+                            ? b.createdAt.toMillis()
+                            : 0;
+
+                    return timeA - timeB;
+                });
+
+
+                // Messages screen par dikhao
+
+                list.forEach((data) => {
+
+                    const div =
+                        document.createElement("div");
+
+
                     div.className = "message";
+
+
                     div.textContent = data.text;
+
 
                     messages.appendChild(div);
                 });
 
-                messages.scrollTop = messages.scrollHeight;
+
+                messages.scrollTop =
+                    messages.scrollHeight;
             },
+
+
             (error) => {
-                console.error(error);
-                document.getElementById("messages").innerHTML =
+
+                console.error(
+                    "Firebase error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "messages"
+                ).innerHTML =
                     "<p style='color:red'>Messages load nahi ho pa rahe.</p>";
             }
         );
 }
 
 
-// Message send karna
+
+// ==========================
+// SEND MESSAGE
+// ==========================
+
 function sendMessage() {
 
-    const input = document.getElementById("message");
+    const input =
+        document.getElementById("message");
 
-    const text = input.value.trim();
 
-    if (text === "") return;
+    const text =
+        input.value.trim();
 
-    if (currentChatId === "") {
-        alert("Pehle Chat ID join karo");
+
+    if (text === "") {
+
         return;
     }
 
-    db.collection("messages").add({
 
-        chatId: currentChatId,
+    if (currentChatId === "") {
 
-        text: text,
+        alert("Pehle Chat ID Join karein");
 
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        return;
+    }
 
-    });
 
-    input.value = "";
+    // Firebase me message save
+
+    db.collection("messages")
+
+        .add({
+
+            text: text,
+
+            chatId: currentChatId,
+
+            createdAt:
+                firebase.firestore.FieldValue
+                    .serverTimestamp()
+
+        })
+
+        .then(() => {
+
+            input.value = "";
+
+        })
+
+        .catch((error) => {
+
+            console.error(error);
+
+            alert(
+                "Message send nahi hua."
+            );
+        });
 }
 
 
-// Enter dabane par message send
-document.getElementById("message").addEventListener("keydown", function(event) {
 
-    if (event.key === "Enter") {
-        sendMessage();
-    }
+// ==========================
+// ENTER BUTTON
+// ==========================
 
-});
+document
+    .getElementById("message")
+    .addEventListener(
+        "keydown",
+        function(event) {
 
+            if (
+                event.key === "Enter"
+            ) {
 
-// Chat ID save karna
-window.addEventListener("load", function() {
-
-    const savedChat = localStorage.getItem("chatId");
-
-    if (savedChat) {
-
-        document.getElementById("chatId").value = savedChat;
-
-        joinChat();
-    }
-
-});
+                sendMessage();
+            }
+        }
+    );
 
 </script>
 
 </body>
+
 </html>
