@@ -1391,3 +1391,433 @@ function deleteSingleMessage() {
         closeMessageMenu();
 
         return;
+    }
+
+
+    db.collection("messages")
+        .doc(selectedMessageId)
+        .delete()
+        .then(() => {
+
+            closeMessageMenu();
+
+        })
+        .catch((error) => {
+
+            alert(
+                "Delete nahi hua: " +
+                error.message
+            );
+
+        });
+
+}
+
+
+/* =========================
+   SELECT FROM MENU
+========================= */
+
+function startSelectionFromMenu() {
+
+    if (!selectedMessageId) {
+
+        return;
+    }
+
+
+    selectionMode = true;
+
+    selectedMessages.clear();
+
+
+    selectedMessages.add(
+        selectedMessageId
+    );
+
+
+    closeMessageMenu();
+
+    updateSelectionBar();
+
+    loadMessages();
+
+}
+
+
+/* =========================
+   UPDATE SELECT BAR
+========================= */
+
+function updateSelectionBar() {
+
+    const bar =
+        document.getElementById(
+            "selectBar"
+        );
+
+    const count =
+        document.getElementById(
+            "selectedCount"
+        );
+
+
+    if (!selectionMode) {
+
+        bar.style.display =
+            "none";
+
+        return;
+    }
+
+
+    bar.style.display =
+        "flex";
+
+
+    count.textContent =
+        selectedMessages.size +
+        " selected";
+
+}
+
+
+/* =========================
+   DELETE SELECTED
+========================= */
+
+async function deleteSelectedMessages() {
+
+    if (
+        selectedMessages.size === 0
+    ) {
+
+        alert(
+            "Pehle message select karo."
+        );
+
+        return;
+    }
+
+
+    const ok =
+        confirm(
+            selectedMessages.size +
+            " message delete karna hai?"
+        );
+
+
+    if (!ok) {
+
+        return;
+    }
+
+
+    try {
+
+        const batch =
+            db.batch();
+
+
+        selectedMessages.forEach(
+            (id) => {
+
+                const ref =
+                    db.collection(
+                        "messages"
+                    ).doc(id);
+
+                batch.delete(ref);
+
+            }
+        );
+
+
+        await batch.commit();
+
+
+        selectedMessages.clear();
+
+        selectionMode = false;
+
+        updateSelectionBar();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Messages delete nahi hue: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CANCEL SELECTION
+========================= */
+
+function cancelSelection() {
+
+    selectedMessages.clear();
+
+    selectionMode = false;
+
+    updateSelectionBar();
+
+    loadMessages();
+
+}
+
+
+/* =========================
+   CANCEL EDIT
+========================= */
+
+function cancelEdit() {
+
+    editingMessageId =
+        null;
+
+
+    document.getElementById(
+        "message"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "editBar"
+    ).style.display =
+        "none";
+
+
+    keepFocus();
+
+}
+
+
+/* =========================
+   CLOSE MENU
+========================= */
+
+function closeMessageMenu() {
+
+    document.getElementById(
+        "messageMenu"
+    ).style.display =
+        "none";
+
+
+    selectedMessageId =
+        null;
+
+    selectedMessageData =
+        null;
+
+}
+
+
+/* =========================
+   OUTSIDE CLICK
+========================= */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const menu =
+            document.getElementById(
+                "messageMenu"
+            );
+
+
+        if (
+            menu.style.display === "block" &&
+            !menu.contains(event.target)
+        ) {
+
+            closeMessageMenu();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   TYPING
+========================= */
+
+function typing() {
+
+    if (
+        currentChatId === ""
+    ) {
+
+        return;
+    }
+
+
+    db.collection("typing")
+        .doc(currentChatId)
+        .set({
+
+            userId:
+                myUserId,
+
+            typing:
+                true,
+
+            time:
+                firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+
+        });
+
+
+    clearTimeout(
+        typingTimer
+    );
+
+
+    typingTimer =
+        setTimeout(
+            stopTyping,
+            1500
+        );
+
+}
+
+
+/* =========================
+   STOP TYPING
+========================= */
+
+function stopTyping() {
+
+    if (
+        currentChatId === ""
+    ) {
+
+        return;
+    }
+
+
+    db.collection("typing")
+        .doc(currentChatId)
+        .set({
+
+            userId:
+                myUserId,
+
+            typing:
+                false,
+
+            time:
+                firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+
+        });
+
+}
+
+
+/* =========================
+   WATCH TYPING
+========================= */
+
+function watchTyping() {
+
+    const status =
+        document.getElementById(
+            "typingStatus"
+        );
+
+
+    unsubscribeTyping =
+        db.collection("typing")
+            .doc(currentChatId)
+            .onSnapshot(
+                (doc) => {
+
+                    const data =
+                        doc.data();
+
+
+                    if (
+                        data &&
+                        data.typing === true &&
+                        data.userId !== myUserId
+                    ) {
+
+                        status.textContent =
+                            "typing...";
+
+                    } else {
+
+                        status.textContent =
+                            "";
+
+                    }
+
+                }
+            );
+
+}
+
+
+/* =========================
+   ENTER MESSAGE
+========================= */
+
+function handleEnter(event) {
+
+    if (
+        event.key === "Enter"
+    ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+}
+
+
+/* =========================
+   CHAT ID ENTER
+========================= */
+
+document
+    .getElementById("chatId")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                joinChat();
+
+            }
+
+        }
+    );
+
+
+</script>
+
+</body>
+
+</html>
