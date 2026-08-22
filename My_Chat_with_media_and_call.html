@@ -1,0 +1,2476 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>My Chat</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: #d9dbd5;
+}
+
+body {
+    overflow: hidden;
+}
+
+.chat {
+    width: 100%;
+    max-width: 600px;
+    height: 100dvh;
+    margin: auto;
+    background: #efe7dd;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    flex-shrink: 0;
+    background: #075e54;
+    color: white;
+    padding: 16px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   JOIN
+========================= */
+
+.join {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    padding: 9px;
+    background: #075e54;
+}
+
+#chatId {
+    flex: 1;
+    min-width: 0;
+    padding: 13px;
+    border: none;
+    border-radius: 9px;
+    outline: none;
+    font-size: 16px;
+}
+
+#joinBtn {
+    padding: 0 18px;
+    border: none;
+    border-radius: 9px;
+    background: white;
+    color: #075e54;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   ROOM
+========================= */
+
+#roomName {
+    display: none;
+    flex-shrink: 0;
+    background: #128c7e;
+    color: white;
+    padding: 9px 13px;
+}
+
+
+/* =========================
+   TYPING
+========================= */
+
+#typingStatus {
+    height: 24px;
+    flex-shrink: 0;
+    padding: 4px 14px 0;
+    background: #efe7dd;
+    color: #128c7e;
+    font-size: 13px;
+    font-style: italic;
+}
+
+
+/* =========================
+   SELECT BAR
+========================= */
+
+#selectBar {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #075e54;
+    color: white;
+}
+
+#selectedCount {
+    flex: 1;
+    font-weight: bold;
+}
+
+#deleteSelectedBtn {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 12px;
+    background: #d32f2f;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#cancelSelectBtn {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 12px;
+    background: white;
+    color: #075e54;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+#messages {
+    flex: 1;
+    min-height: 0;
+    padding: 10px;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.messageRow {
+    display: flex;
+    width: 100%;
+    margin: 3px 0;
+    align-items: center;
+    gap: 7px;
+}
+
+.myRow {
+    justify-content: flex-end;
+}
+
+.otherRow {
+    justify-content: flex-start;
+}
+
+.selectBox {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.message {
+    position: relative;
+    max-width: 82%;
+    width: fit-content;
+
+    padding: 9px 13px;
+    border-radius: 11px;
+
+    word-break: break-word;
+    overflow-wrap: anywhere;
+
+    font-size: 16px;
+    line-height: 1.35;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    cursor: default;
+}
+
+.my-message {
+    background: #dcf8c6;
+    border-bottom-right-radius: 3px;
+}
+
+.other-message {
+    background: white;
+    border-bottom-left-radius: 3px;
+}
+
+.selectedMessage {
+    outline: 3px solid #128c7e;
+}
+
+.edited {
+    margin-left: 6px;
+    color: #777;
+    font-size: 11px;
+}
+
+
+/* =========================
+   EDIT BAR
+========================= */
+
+#editBar {
+    display: none;
+    flex-shrink: 0;
+    background: #e8e8e8;
+    padding: 8px 12px;
+    border-left: 4px solid #128c7e;
+}
+
+#editBar span {
+    color: #075e54;
+    font-size: 14px;
+}
+
+#cancelEdit {
+    float: right;
+    border: none;
+    background: transparent;
+    color: #777;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   SEND
+========================= */
+
+.send {
+    flex-shrink: 0;
+
+    display: flex;
+    gap: 8px;
+
+    padding: 9px;
+
+    padding-bottom:
+        calc(9px + env(safe-area-inset-bottom));
+
+    background: #ddd;
+}
+
+#message {
+    flex: 1;
+    min-width: 0;
+
+    height: 48px;
+
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 25px;
+
+    outline: none;
+
+    background: white;
+    color: #111;
+
+    font-size: 16px;
+}
+
+#sendBtn {
+    flex-shrink: 0;
+
+    height: 48px;
+
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 25px;
+
+    background: #128c7e;
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#sendBtn:disabled {
+    background: #999;
+}
+
+/* =========================
+   MEDIA / TOOLS
+========================= */
+
+.toolsBar {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 5px;
+    background: #f7f7f7;
+    border-top: 1px solid #ccc;
+    padding-bottom: calc(7px + env(safe-area-inset-bottom));
+}
+
+.toolsBar button {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: #075e54;
+    cursor: pointer;
+    font-size: 23px;
+    padding: 4px 2px;
+    border-radius: 8px;
+}
+
+.toolsBar button:hover {
+    background: #e5e5e5;
+}
+
+.toolsBar button span {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+    color: #333;
+}
+
+.mediaMessage {
+    display: block;
+    max-width: 260px;
+}
+
+.mediaMessage img {
+    display: block;
+    max-width: 100%;
+    max-height: 320px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.mediaMessage video {
+    display: block;
+    width: 260px;
+    max-width: 100%;
+    max-height: 320px;
+    border-radius: 8px;
+}
+
+.fileMessage {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #075e54;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 4px;
+}
+
+.callBox {
+    position: fixed;
+    left: 50%;
+    bottom: 95px;
+    transform: translateX(-50%);
+    z-index: 100000;
+    width: min(340px, calc(100% - 30px));
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 6px 25px rgba(0,0,0,.28);
+    padding: 14px;
+    text-align: center;
+}
+
+.callBox button {
+    margin-top: 10px;
+    border: none;
+    border-radius: 22px;
+    padding: 10px 18px;
+    background: #d32f2f;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#callStatus {
+    color: #075e54;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .toolsBar button {
+        font-size: 21px;
+    }
+    .toolsBar button span {
+        font-size: 10px;
+    }
+}
+
+
+
+/* =========================
+   MESSAGE MENU
+========================= */
+
+#messageMenu {
+    display: none;
+
+    position: fixed;
+
+    z-index: 99999;
+
+    width: 165px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+#messageMenu button {
+    display: block;
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    background: white;
+
+    text-align: left;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+#messageMenu button:hover {
+    background: #eeeeee;
+}
+
+#messageMenu button:active {
+    background: #dddddd;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .message {
+        max-width: 85%;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="chat">
+
+
+<!-- HEADER -->
+
+<div class="header">
+    💬 My Chat
+</div>
+
+
+<!-- JOIN -->
+
+<div class="join">
+
+    <input
+        id="chatId"
+        type="text"
+        placeholder="Chat ID डालें"
+        autocomplete="off"
+    >
+
+    <button
+        type="button"
+        id="joinBtn"
+        onclick="joinChat()"
+    >
+        Join
+    </button>
+
+</div>
+
+
+<!-- ROOM -->
+
+<div id="roomName"></div>
+
+
+<!-- TYPING -->
+
+<div id="typingStatus"></div>
+
+
+<!-- SELECT BAR -->
+
+<div id="selectBar">
+
+    <span id="selectedCount">
+        0 selected
+    </span>
+
+    <button
+        type="button"
+        id="deleteSelectedBtn"
+        onclick="deleteSelectedMessages()"
+    >
+        🗑️ Delete
+    </button>
+
+    <button
+        type="button"
+        id="cancelSelectBtn"
+        onclick="cancelSelection()"
+    >
+        ✕
+    </button>
+
+</div>
+
+
+<!-- MESSAGES -->
+
+<div id="messages"></div>
+
+
+<!-- EDIT BAR -->
+
+<div id="editBar">
+
+    <span>
+        ✏️ Message edit कर रहे हैं
+    </span>
+
+    <button
+        type="button"
+        id="cancelEdit"
+        onclick="cancelEdit()"
+    >
+        ✕
+    </button>
+
+</div>
+
+
+<!-- SEND -->
+
+<div class="send">
+
+    <input
+        id="message"
+        type="text"
+        placeholder="Message likho..."
+        disabled
+        autocomplete="off"
+        oninput="typing()"
+        onkeydown="handleEnter(event)"
+    >
+
+    <button
+        type="button"
+        id="sendBtn"
+        onclick="sendMessage()"
+        disabled
+    >
+        Send
+    </button>
+
+</div>
+
+<!-- ATTACHMENT / CALL BAR -->
+<div class="toolsBar">
+
+    <button type="button" onclick="openCamera()" title="Camera">
+        📷<span>Camera</span>
+    </button>
+
+    <button type="button" onclick="openPhoto()" title="Photo">
+        🖼️<span>Photo</span>
+    </button>
+
+    <button type="button" onclick="openVideo()" title="Video">
+        🎥<span>Video</span>
+    </button>
+
+    <button type="button" onclick="openFile()" title="File">
+        📎<span>File</span>
+    </button>
+
+    <button type="button" onclick="startVoiceCall()" title="Voice Call">
+        📞<span>Call</span>
+    </button>
+
+</div>
+
+<input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
+<input id="photoInput" type="file" accept="image/*" hidden>
+<input id="videoInput" type="file" accept="video/*" hidden>
+<input id="fileInput" type="file" hidden>
+
+<div id="callBox" class="callBox" style="display:none;">
+    <div id="callStatus">Calling...</div>
+    <button type="button" onclick="endCall()">❌ End Call</button>
+</div>
+
+
+</div>
+
+
+<!-- MESSAGE MENU -->
+
+<div id="messageMenu">
+
+    <button
+        type="button"
+        onclick="editSelectedMessage()"
+    >
+        ✏️ Edit
+    </button>
+
+    <button
+        type="button"
+        onclick="deleteSingleMessage()"
+    >
+        🗑️ Delete
+    </button>
+
+    <button
+        type="button"
+        onclick="startSelectionFromMenu()"
+    >
+        ☑️ Select
+    </button>
+
+</div>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+
+<script>
+
+
+/* =========================
+   FIREBASE
+========================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
+
+    authDomain:
+        "mychat-51ee7.firebaseapp.com",
+
+    projectId:
+        "mychat-51ee7",
+
+    storageBucket:
+        "mychat-51ee7.firebasestorage.app",
+
+    messagingSenderId:
+        "917061147739",
+
+    appId:
+        "1:917061147739:web:26644bb81926959325337e",
+
+    measurementId:
+        "G-SK11R1SYJ8"
+};
+
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+
+/* =========================
+   USER ID
+========================= */
+
+let myUserId =
+    localStorage.getItem("myChatUserId");
+
+
+if (!myUserId) {
+
+    myUserId =
+        "user_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 9);
+
+    localStorage.setItem(
+        "myChatUserId",
+        myUserId
+    );
+}
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let currentChatId = "";
+
+let unsubscribeMessages = null;
+
+let unsubscribeTyping = null;
+
+let typingTimer = null;
+
+let selectedMessageId = null;
+
+let selectedMessageData = null;
+
+let editingMessageId = null;
+
+let mediaUploadInProgress = false;
+
+let peerConnection = null;
+let localStream = null;
+let remoteStream = null;
+let activeCallId = null;
+let isCallCaller = false;
+let unsubscribeCall = null;
+let unsubscribeRemoteCandidates = null;
+let unsubscribeIncomingCall = null;
+
+
+/* MULTI SELECT */
+
+let selectionMode = false;
+
+let selectedMessages = new Set();
+
+
+/* =========================
+   JOIN CHAT
+========================= */
+
+function joinChat() {
+
+    const chatInput =
+        document.getElementById("chatId");
+
+    const chatId =
+        chatInput.value.trim();
+
+
+    if (chatId === "") {
+
+        alert("Chat ID डालें");
+
+        return;
+    }
+
+
+    currentChatId = chatId;
+
+
+    if (unsubscribeMessages) {
+
+        unsubscribeMessages();
+
+        unsubscribeMessages = null;
+    }
+
+
+    if (unsubscribeTyping) {
+
+        unsubscribeTyping();
+
+        unsubscribeTyping = null;
+    }
+
+
+    document.getElementById(
+        "roomName"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "roomName"
+    ).textContent =
+        "🔒 Chat ID: " +
+        currentChatId;
+
+
+    document.getElementById(
+        "message"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "sendBtn"
+    ).disabled = false;
+
+
+    loadMessages();
+
+    watchTyping();
+
+    listenForIncomingCalls();
+
+
+    setTimeout(() => {
+
+        document.getElementById(
+            "message"
+        ).focus();
+
+    }, 100);
+
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+function sendMessage() {
+
+    const input =
+        document.getElementById("message");
+
+    const text =
+        input.value.trim();
+
+
+    if (text === "") {
+
+        return;
+    }
+
+
+    if (currentChatId === "") {
+
+        alert("Pehle Join karo");
+
+        return;
+    }
+
+
+    /* EDIT MODE */
+
+    if (editingMessageId) {
+
+        db.collection("messages")
+            .doc(editingMessageId)
+            .update({
+
+                text: text,
+
+                edited: true,
+
+                editedAt:
+                    firebase.firestore
+                        .FieldValue
+                        .serverTimestamp()
+
+            })
+            .then(() => {
+
+                input.value = "";
+
+                cancelEdit();
+
+                keepFocus();
+
+            })
+            .catch((error) => {
+
+                alert(
+                    "Edit nahi hua: " +
+                    error.message
+                );
+
+            });
+
+        return;
+    }
+
+
+    /* NEW MESSAGE */
+
+    db.collection("messages")
+        .add({
+
+            chatId:
+                currentChatId,
+
+            text:
+                text,
+
+            sender:
+                myUserId,
+
+            edited:
+                false,
+
+            createdAt:
+                firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+
+        })
+        .then(() => {
+
+            input.value = "";
+
+            stopTyping();
+
+            keepFocus();
+
+        })
+        .catch((error) => {
+
+            alert(
+                "Message send nahi hua: " +
+                error.message
+            );
+
+        });
+
+}
+
+
+/* =========================
+   KEEP INPUT ACTIVE
+========================= */
+
+function keepFocus() {
+
+    const input =
+        document.getElementById("message");
+
+
+    if (input.disabled) {
+
+        return;
+    }
+
+
+    input.focus();
+
+
+    setTimeout(() => {
+
+        input.focus();
+
+    }, 50);
+
+}
+
+
+/* =========================
+   LOAD MESSAGES
+========================= */
+
+function loadMessages() {
+
+    const messages =
+        document.getElementById("messages");
+
+
+    unsubscribeMessages =
+        db.collection("messages")
+
+            .where(
+                "chatId",
+                "==",
+                currentChatId
+            )
+
+            .onSnapshot(
+
+                (snapshot) => {
+
+                    messages.innerHTML = "";
+
+                    let list = [];
+
+
+                    snapshot.forEach((doc) => {
+
+                        list.push({
+
+                            id:
+                                doc.id,
+
+                            ...doc.data()
+
+                        });
+
+                    });
+
+
+                    list.sort((a, b) => {
+
+                        const aTime =
+                            a.createdAt
+                                ? a.createdAt.toMillis()
+                                : 0;
+
+                        const bTime =
+                            b.createdAt
+                                ? b.createdAt.toMillis()
+                                : 0;
+
+                        return aTime - bTime;
+
+                    });
+
+
+                    list.forEach((msg) => {
+
+                        createMessageElement(
+                            msg,
+                            messages
+                        );
+
+                    });
+
+
+                    messages.scrollTop =
+                        messages.scrollHeight;
+
+                },
+
+                (error) => {
+
+                    console.error(error);
+
+                    messages.innerHTML =
+                        "<div style='color:red;padding:15px'>" +
+                        "Messages load nahi ho pa rahe." +
+                        "</div>";
+
+                }
+
+            );
+
+}
+
+
+/* =========================
+   CREATE MESSAGE
+========================= */
+
+function createMessageElement(
+    msg,
+    container
+) {
+
+    const row =
+        document.createElement("div");
+
+
+    row.className =
+        "messageRow";
+
+
+    if (msg.sender === myUserId) {
+
+        row.classList.add("myRow");
+
+    } else {
+
+        row.classList.add("otherRow");
+
+    }
+
+
+    /* CHECKBOX */
+
+    if (
+        selectionMode &&
+        msg.sender === myUserId
+    ) {
+
+        const checkbox =
+            document.createElement("input");
+
+        checkbox.type =
+            "checkbox";
+
+        checkbox.className =
+            "selectBox";
+
+        checkbox.checked =
+            selectedMessages.has(
+                msg.id
+            );
+
+
+        checkbox.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
+
+            }
+        );
+
+
+        checkbox.addEventListener(
+            "change",
+            function() {
+
+                if (this.checked) {
+
+                    selectedMessages.add(
+                        msg.id
+                    );
+
+                } else {
+
+                    selectedMessages.delete(
+                        msg.id
+                    );
+
+                }
+
+
+                updateSelectionBar();
+
+            }
+        );
+
+
+        row.appendChild(
+            checkbox
+        );
+
+    }
+
+
+    /* MESSAGE */
+
+    const div =
+        document.createElement("div");
+
+
+    div.className =
+        "message";
+
+
+    if (msg.sender === myUserId) {
+
+        div.classList.add(
+            "my-message"
+        );
+
+    } else {
+
+        div.classList.add(
+            "other-message"
+        );
+
+    }
+
+
+    if (
+        selectedMessages.has(
+            msg.id
+        )
+    ) {
+
+        div.classList.add(
+            "selectedMessage"
+        );
+
+    }
+
+
+    /* MESSAGE CONTENT */
+
+    if (msg.type === "image" && msg.url) {
+
+        const wrap = document.createElement("div");
+        wrap.className = "mediaMessage";
+
+        const img = document.createElement("img");
+        img.src = msg.url;
+        img.alt = msg.name || "Photo";
+        img.loading = "lazy";
+
+        img.onclick = () => window.open(msg.url, "_blank");
+
+        wrap.appendChild(img);
+        div.appendChild(wrap);
+
+    } else if (msg.type === "video" && msg.url) {
+
+        const wrap = document.createElement("div");
+        wrap.className = "mediaMessage";
+
+        const video = document.createElement("video");
+        video.src = msg.url;
+        video.controls = true;
+        video.preload = "metadata";
+
+        wrap.appendChild(video);
+        div.appendChild(wrap);
+
+    } else if (msg.type === "file" && msg.url) {
+
+        const link = document.createElement("a");
+        link.className = "fileMessage";
+        link.href = msg.url;
+        link.target = "_blank";
+        link.rel = "noopener";
+
+        link.innerHTML =
+            "📎 " + escapeHtml(msg.name || "File");
+
+        div.appendChild(link);
+
+    } else {
+
+        div.textContent = msg.text || "";
+
+    }
+
+
+    /* EDITED */
+
+    if (msg.edited) {
+
+        const edited =
+            document.createElement("span");
+
+        edited.className =
+            "edited";
+
+        edited.textContent =
+            "edited";
+
+        div.appendChild(
+            edited
+        );
+
+    }
+
+
+    /* SELECT MODE */
+
+    if (
+        selectionMode &&
+        msg.sender === myUserId
+    ) {
+
+        div.addEventListener(
+            "click",
+            function() {
+
+                if (
+                    selectedMessages.has(
+                        msg.id
+                    )
+                ) {
+
+                    selectedMessages.delete(
+                        msg.id
+                    );
+
+                } else {
+
+                    selectedMessages.add(
+                        msg.id
+                    );
+
+                }
+
+
+                updateSelectionBar();
+
+                loadMessages();
+
+            }
+        );
+
+    }
+
+
+    /* NORMAL MODE */
+
+    if (
+        !selectionMode &&
+        msg.sender === myUserId
+    ) {
+
+        addMessageActions(
+            div,
+            msg.id,
+            msg
+        );
+
+    }
+
+
+    row.appendChild(div);
+
+    container.appendChild(row);
+
+}
+
+
+/* =========================
+   MESSAGE ACTIONS
+   LAPTOP RIGHT CLICK
+   MOBILE LONG PRESS
+========================= */
+
+function addMessageActions(
+    element,
+    messageId,
+    messageData
+) {
+
+    let timer = null;
+
+
+    /* =====================
+       LAPTOP RIGHT CLICK
+    ===================== */
+
+    element.addEventListener(
+        "contextmenu",
+        function(event) {
+
+            event.preventDefault();
+
+            selectedMessageId =
+                messageId;
+
+            selectedMessageData =
+                messageData;
+
+            showMessageMenu(event);
+
+        }
+    );
+
+
+    /* =====================
+       MOBILE LONG PRESS
+    ===================== */
+
+    element.addEventListener(
+        "touchstart",
+        function(event) {
+
+            timer =
+                setTimeout(() => {
+
+                    selectedMessageId =
+                        messageId;
+
+                    selectedMessageData =
+                        messageData;
+
+                    showMessageMenu(
+                        event
+                    );
+
+                }, 600);
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    element.addEventListener(
+        "touchend",
+        function() {
+
+            clearTimeout(timer);
+
+        }
+    );
+
+
+    element.addEventListener(
+        "touchmove",
+        function() {
+
+            clearTimeout(timer);
+
+        }
+    );
+
+}
+
+
+/* =========================
+   SHOW MENU
+========================= */
+
+function showMessageMenu(event) {
+
+    const menu =
+        document.getElementById(
+            "messageMenu"
+        );
+
+
+    menu.style.display =
+        "block";
+
+
+    let x = 20;
+
+    let y = 100;
+
+
+    if (
+        event &&
+        event.touches &&
+        event.touches.length
+    ) {
+
+        x =
+            event.touches[0]
+                .clientX;
+
+        y =
+            event.touches[0]
+                .clientY;
+
+    } else if (event) {
+
+        x =
+            event.clientX;
+
+        y =
+            event.clientY;
+
+    }
+
+
+    if (
+        x + 165 >
+        window.innerWidth
+    ) {
+
+        x =
+            window.innerWidth - 175;
+
+    }
+
+
+    if (
+        y + 150 >
+        window.innerHeight
+    ) {
+
+        y =
+            window.innerHeight - 160;
+
+    }
+
+
+    menu.style.left =
+        x + "px";
+
+    menu.style.top =
+        y + "px";
+
+}
+
+
+/* =========================
+   EDIT MESSAGE
+========================= */
+
+function editSelectedMessage() {
+
+    if (!selectedMessageId) {
+
+        return;
+    }
+
+
+    const input =
+        document.getElementById(
+            "message"
+        );
+
+
+    input.value =
+        selectedMessageData.text ||
+        "";
+
+
+    editingMessageId =
+        selectedMessageId;
+
+
+    document.getElementById(
+        "editBar"
+    ).style.display =
+        "block";
+
+
+    closeMessageMenu();
+
+    keepFocus();
+
+}
+
+
+/* =========================
+   DELETE ONE MESSAGE
+========================= */
+
+function deleteSingleMessage() {
+
+    if (!selectedMessageId) {
+
+        return;
+    }
+
+
+    const ok =
+        confirm(
+            "Ye message delete karna hai?"
+        );
+
+
+    if (!ok) {
+
+        closeMessageMenu();
+
+        return;
+    }
+
+
+    db.collection("messages")
+        .doc(selectedMessageId)
+        .delete()
+        .then(() => {
+
+            closeMessageMenu();
+
+        })
+        .catch((error) => {
+
+            alert(
+                "Delete nahi hua: " +
+                error.message
+            );
+
+        });
+
+}
+
+
+/* =========================
+   SELECT FROM MENU
+========================= */
+
+function startSelectionFromMenu() {
+
+    if (!selectedMessageId) {
+
+        return;
+    }
+
+
+    selectionMode = true;
+
+    selectedMessages.clear();
+
+
+    selectedMessages.add(
+        selectedMessageId
+    );
+
+
+    closeMessageMenu();
+
+    updateSelectionBar();
+
+    loadMessages();
+
+}
+
+
+/* =========================
+   UPDATE SELECT BAR
+========================= */
+
+function updateSelectionBar() {
+
+    const bar =
+        document.getElementById(
+            "selectBar"
+        );
+
+    const count =
+        document.getElementById(
+            "selectedCount"
+        );
+
+
+    if (!selectionMode) {
+
+        bar.style.display =
+            "none";
+
+        return;
+    }
+
+
+    bar.style.display =
+        "flex";
+
+
+    count.textContent =
+        selectedMessages.size +
+        " selected";
+
+}
+
+
+/* =========================
+   DELETE SELECTED
+========================= */
+
+async function deleteSelectedMessages() {
+
+    if (
+        selectedMessages.size === 0
+    ) {
+
+        alert(
+            "Pehle message select karo."
+        );
+
+        return;
+    }
+
+
+    const ok =
+        confirm(
+            selectedMessages.size +
+            " message delete karna hai?"
+        );
+
+
+    if (!ok) {
+
+        return;
+    }
+
+
+    try {
+
+        const batch =
+            db.batch();
+
+
+        selectedMessages.forEach(
+            (id) => {
+
+                const ref =
+                    db.collection(
+                        "messages"
+                    ).doc(id);
+
+                batch.delete(ref);
+
+            }
+        );
+
+
+        await batch.commit();
+
+
+        selectedMessages.clear();
+
+        selectionMode = false;
+
+        updateSelectionBar();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Messages delete nahi hue: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CANCEL SELECTION
+========================= */
+
+function cancelSelection() {
+
+    selectedMessages.clear();
+
+    selectionMode = false;
+
+    updateSelectionBar();
+
+    loadMessages();
+
+}
+
+
+/* =========================
+   CANCEL EDIT
+========================= */
+
+function cancelEdit() {
+
+    editingMessageId =
+        null;
+
+
+    document.getElementById(
+        "message"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "editBar"
+    ).style.display =
+        "none";
+
+
+    keepFocus();
+
+}
+
+
+/* =========================
+   CLOSE MENU
+========================= */
+
+function closeMessageMenu() {
+
+    document.getElementById(
+        "messageMenu"
+    ).style.display =
+        "none";
+
+
+    selectedMessageId =
+        null;
+
+    selectedMessageData =
+        null;
+
+}
+
+
+/* =========================
+   OUTSIDE CLICK
+========================= */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const menu =
+            document.getElementById(
+                "messageMenu"
+            );
+
+
+        if (
+            menu.style.display === "block" &&
+            !menu.contains(event.target)
+        ) {
+
+            closeMessageMenu();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   MEDIA / FILE SEND
+========================= */
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text || "";
+    return div.innerHTML;
+}
+
+function openCamera() {
+    if (!checkChatReady()) return;
+    document.getElementById("cameraInput").click();
+}
+
+function openPhoto() {
+    if (!checkChatReady()) return;
+    document.getElementById("photoInput").click();
+}
+
+function openVideo() {
+    if (!checkChatReady()) return;
+    document.getElementById("videoInput").click();
+}
+
+function openFile() {
+    if (!checkChatReady()) return;
+    document.getElementById("fileInput").click();
+}
+
+function checkChatReady() {
+    if (!currentChatId) {
+        alert("Pehle Chat ID Join karo.");
+        return false;
+    }
+    if (mediaUploadInProgress) {
+        alert("Ek file upload ho rahi hai. Thoda wait karo.");
+        return false;
+    }
+    return true;
+}
+
+async function uploadSelectedFile(file) {
+
+    if (!file || !checkChatReady()) return;
+
+    const maxSize = 50 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+        alert("File 50 MB se chhoti honi chahiye.");
+        return;
+    }
+
+    mediaUploadInProgress = true;
+
+    try {
+
+        let type = "file";
+
+        if (file.type.startsWith("image/")) {
+            type = "image";
+        } else if (file.type.startsWith("video/")) {
+            type = "video";
+        }
+
+        const safeName =
+            Date.now() + "_" +
+            myUserId + "_" +
+            file.name.replace(/[^\w.\-() ]/g, "_");
+
+        const fileRef = storage
+            .ref()
+            .child("chatFiles/" + currentChatId + "/" + safeName);
+
+        const snapshot = await fileRef.put(file);
+        const url = await snapshot.ref.getDownloadURL();
+
+        await db.collection("messages").add({
+            chatId: currentChatId,
+            sender: myUserId,
+            type: type,
+            text: "",
+            url: url,
+            name: file.name,
+            size: file.size,
+            mimeType: file.type || "",
+            edited: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+    } catch (error) {
+
+        console.error(error);
+        alert("File send nahi hui: " + error.message);
+
+    } finally {
+
+        mediaUploadInProgress = false;
+
+    }
+}
+
+document.getElementById("cameraInput").addEventListener("change", function() {
+    if (this.files && this.files[0]) uploadSelectedFile(this.files[0]);
+    this.value = "";
+});
+
+document.getElementById("photoInput").addEventListener("change", function() {
+    if (this.files && this.files[0]) uploadSelectedFile(this.files[0]);
+    this.value = "";
+});
+
+document.getElementById("videoInput").addEventListener("change", function() {
+    if (this.files && this.files[0]) uploadSelectedFile(this.files[0]);
+    this.value = "";
+});
+
+document.getElementById("fileInput").addEventListener("change", function() {
+    if (this.files && this.files[0]) uploadSelectedFile(this.files[0]);
+    this.value = "";
+});
+
+
+/* =========================
+   VOICE CALL - WEBRTC
+========================= */
+
+const rtcConfig = {
+    iceServers: [
+        { urls: "stun:stun.l.google.com:19302" }
+    ]
+};
+
+function showCallBox(text) {
+    document.getElementById("callBox").style.display = "block";
+    document.getElementById("callStatus").textContent = text;
+}
+
+function hideCallBox() {
+    document.getElementById("callBox").style.display = "none";
+}
+
+async function startVoiceCall() {
+
+    if (!currentChatId) {
+        alert("Pehle Chat ID Join karo.");
+        return;
+    }
+
+    if (peerConnection) {
+        alert("Call already active hai.");
+        return;
+    }
+
+    try {
+
+        localStream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false
+        });
+
+        isCallCaller = true;
+        activeCallId = currentChatId + "_" + Date.now();
+
+        peerConnection = new RTCPeerConnection(rtcConfig);
+
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+
+        peerConnection.ontrack = event => {
+            if (!remoteStream) {
+                remoteStream = new MediaStream();
+                const audio = document.createElement("audio");
+                audio.id = "remoteAudio";
+                audio.autoplay = true;
+                audio.controls = false;
+                audio.style.display = "none";
+                document.body.appendChild(audio);
+                audio.srcObject = remoteStream;
+            }
+
+            event.streams[0].getTracks().forEach(track => {
+                remoteStream.addTrack(track);
+            });
+        };
+
+        const callRef = db.collection("calls").doc(activeCallId);
+
+        peerConnection.onicecandidate = event => {
+            if (event.candidate) {
+                callRef.collection("callerCandidates").add(
+                    event.candidate.toJSON()
+                );
+            }
+        };
+
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        await callRef.set({
+            chatId: currentChatId,
+            callerId: myUserId,
+            offer: {
+                type: offer.type,
+                sdp: offer.sdp
+            },
+            status: "ringing",
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showCallBox("📞 Calling...");
+
+        unsubscribeCall = callRef.onSnapshot(async snap => {
+
+            const data = snap.data();
+
+            if (!data) return;
+
+            if (
+                data.answer &&
+                !peerConnection.currentRemoteDescription
+            ) {
+                await peerConnection.setRemoteDescription(
+                    new RTCSessionDescription(data.answer)
+                );
+
+                showCallBox("📞 Connected");
+            }
+
+            if (data.status === "ended") {
+                endCall(false);
+            }
+
+        });
+
+        unsubscribeRemoteCandidates =
+            callRef.collection("calleeCandidates")
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === "added") {
+                            const candidate = new RTCIceCandidate(
+                                change.doc.data()
+                            );
+                            peerConnection.addIceCandidate(candidate)
+                                .catch(console.error);
+                        }
+                    });
+                });
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Call start nahi hua: " + error.message);
+        endCall(false);
+
+    }
+}
+
+async function listenForIncomingCalls() {
+
+    if (!currentChatId) return;
+
+    if (unsubscribeIncomingCall) {
+        unsubscribeIncomingCall();
+        unsubscribeIncomingCall = null;
+    }
+
+    unsubscribeIncomingCall =
+        db.collection("calls")
+            .where("chatId", "==", currentChatId)
+            .where("status", "==", "ringing")
+            .onSnapshot(async snapshot => {
+
+                for (const change of snapshot.docChanges()) {
+
+                    if (change.type !== "added") continue;
+
+                    const data = change.doc.data();
+
+                    if (!data || data.callerId === myUserId) continue;
+                    if (peerConnection) continue;
+
+                    const accept = confirm(
+                        "📞 Incoming voice call. Call receive karna hai?"
+                    );
+
+                    if (accept) {
+                        await answerVoiceCall(change.doc.id, data);
+                    } else {
+                        await change.doc.ref.update({
+                            status: "ended"
+                        });
+                    }
+                }
+
+            });
+}
+
+async function answerVoiceCall(callId, data) {
+
+    try {
+
+        localStream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false
+        });
+
+        activeCallId = callId;
+        isCallCaller = false;
+
+        peerConnection = new RTCPeerConnection(rtcConfig);
+
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+
+        peerConnection.ontrack = event => {
+
+            if (!remoteStream) {
+                remoteStream = new MediaStream();
+
+                const audio = document.createElement("audio");
+                audio.id = "remoteAudio";
+                audio.autoplay = true;
+                audio.style.display = "none";
+
+                document.body.appendChild(audio);
+                audio.srcObject = remoteStream;
+            }
+
+            event.streams[0].getTracks().forEach(track => {
+                remoteStream.addTrack(track);
+            });
+        };
+
+        const callRef = db.collection("calls").doc(callId);
+
+        peerConnection.onicecandidate = event => {
+            if (event.candidate) {
+                callRef.collection("calleeCandidates").add(
+                    event.candidate.toJSON()
+                );
+            }
+        };
+
+        await peerConnection.setRemoteDescription(
+            new RTCSessionDescription(data.offer)
+        );
+
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        await callRef.update({
+            answer: {
+                type: answer.type,
+                sdp: answer.sdp
+            },
+            status: "connected"
+        });
+
+        showCallBox("📞 Connected");
+
+        unsubscribeCall = callRef.onSnapshot(snap => {
+            const latest = snap.data();
+
+            if (latest && latest.status === "ended") {
+                endCall(false);
+            }
+        });
+
+        unsubscribeRemoteCandidates =
+            callRef.collection("callerCandidates")
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === "added") {
+                            const candidate = new RTCIceCandidate(
+                                change.doc.data()
+                            );
+                            peerConnection.addIceCandidate(candidate)
+                                .catch(console.error);
+                        }
+                    });
+                });
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Call receive nahi hui: " + error.message);
+        endCall(false);
+
+    }
+}
+
+async function endCall(updateServer = true) {
+
+    try {
+
+        if (updateServer && activeCallId) {
+            await db.collection("calls")
+                .doc(activeCallId)
+                .set(
+                    { status: "ended" },
+                    { merge: true }
+                );
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+
+    if (unsubscribeCall) {
+        unsubscribeCall();
+        unsubscribeCall = null;
+    }
+
+    if (unsubscribeRemoteCandidates) {
+        unsubscribeRemoteCandidates();
+        unsubscribeRemoteCandidates = null;
+    }
+
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+    }
+
+    if (remoteStream) {
+        remoteStream.getTracks().forEach(track => track.stop());
+        remoteStream = null;
+    }
+
+    const audio = document.getElementById("remoteAudio");
+    if (audio) audio.remove();
+
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+    }
+
+    activeCallId = null;
+    isCallCaller = false;
+
+    hideCallBox();
+}
+
+/* Start watching for calls after joining */
+
+/* =========================
+   TYPING
+========================= */
+
+function typing() {
+
+    if (
+        currentChatId === ""
+    ) {
+
+        return;
+    }
+
+
+    db.collection("typing")
+        .doc(currentChatId)
+        .set({
+
+            userId:
+                myUserId,
+
+            typing:
+                true,
+
+            time:
+                firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+
+        });
+
+
+    clearTimeout(
+        typingTimer
+    );
+
+
+    typingTimer =
+        setTimeout(
+            stopTyping,
+            1500
+        );
+
+}
+
+
+/* =========================
+   STOP TYPING
+========================= */
+
+function stopTyping() {
+
+    if (
+        currentChatId === ""
+    ) {
+
+        return;
+    }
+
+
+    db.collection("typing")
+        .doc(currentChatId)
+        .set({
+
+            userId:
+                myUserId,
+
+            typing:
+                false,
+
+            time:
+                firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+
+        });
+
+}
+
+
+/* =========================
+   WATCH TYPING
+========================= */
+
+function watchTyping() {
+
+    const status =
+        document.getElementById(
+            "typingStatus"
+        );
+
+
+    unsubscribeTyping =
+        db.collection("typing")
+            .doc(currentChatId)
+            .onSnapshot(
+                (doc) => {
+
+                    const data =
+                        doc.data();
+
+
+                    if (
+                        data &&
+                        data.typing === true &&
+                        data.userId !== myUserId
+                    ) {
+
+                        status.textContent =
+                            "typing...";
+
+                    } else {
+
+                        status.textContent =
+                            "";
+
+                    }
+
+                }
+            );
+
+}
+
+
+/* =========================
+   ENTER MESSAGE
+========================= */
+
+function handleEnter(event) {
+
+    if (
+        event.key === "Enter"
+    ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+}
+
+
+/* =========================
+   CHAT ID ENTER
+========================= */
+
+document
+    .getElementById("chatId")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                joinChat();
+
+            }
+
+        }
+    );
+
+
+</script>
+
+</body>
+
+</html>
