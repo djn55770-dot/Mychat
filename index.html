@@ -1,235 +1,226 @@
 <!DOCTYPE html>
 <html lang="hi">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>My Chat App</title>
+<title>My Chat</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    font-family:Arial,sans-serif;
+    background:#d9dbd5;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background: #d9dbd5;
-}
+body{overflow:hidden}
 
-body {
-    overflow: hidden;
-}
-
-.chat {
-    width: 100%;
-    max-width: 600px;
-    height: 100dvh;
-    margin: auto;
-    background: #efe7dd;
-    display: flex;
-    flex-direction: column;
+.chat{
+    width:100%;
+    max-width:600px;
+    height:100dvh;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    background:#efe7dd;
 }
 
 /* HEADER */
-.header {
-    flex-shrink: 0;
-    background: #075e54;
-    color: white;
-    padding: 17px;
-    font-size: 24px;
-    font-weight: bold;
+.header{
+    flex-shrink:0;
+    padding:16px;
+    background:#075e54;
+    color:white;
+    font-size:23px;
+    font-weight:bold;
 }
 
 /* JOIN */
-.join {
-    flex-shrink: 0;
-    display: flex;
-    gap: 8px;
-    padding: 9px;
-    background: #075e54;
+.join{
+    flex-shrink:0;
+    display:flex;
+    gap:8px;
+    padding:9px;
+    background:#075e54;
 }
 
-#chatId {
-    flex: 1;
-    min-width: 0;
-    padding: 13px;
-    border: none;
-    border-radius: 9px;
-    outline: none;
-    font-size: 16px;
+#chatId{
+    flex:1;
+    min-width:0;
+    padding:13px;
+    border:0;
+    border-radius:9px;
+    outline:0;
+    font-size:16px;
 }
 
-#joinBtn {
-    padding: 0 18px;
-    border: none;
-    border-radius: 9px;
-    background: white;
-    color: #075e54;
-    font-weight: bold;
-    font-size: 16px;
+#joinBtn{
+    padding:0 18px;
+    border:0;
+    border-radius:9px;
+    background:white;
+    color:#075e54;
+    font-weight:bold;
 }
 
 /* ROOM */
-#roomName {
-    display: none;
-    flex-shrink: 0;
-    background: #128c7e;
-    color: white;
-    padding: 9px 13px;
+#roomName{
+    display:none;
+    flex-shrink:0;
+    padding:9px 13px;
+    background:#128c7e;
+    color:white;
 }
 
 /* TYPING */
-#typingStatus {
-    height: 24px;
-    flex-shrink: 0;
-    padding-left: 14px;
-    padding-top: 4px;
-    background: #efe7dd;
-    color: #128c7e;
-    font-size: 13px;
-    font-style: italic;
+#typingStatus{
+    flex-shrink:0;
+    height:24px;
+    padding:4px 14px 0;
+    background:#efe7dd;
+    color:#128c7e;
+    font-size:13px;
+    font-style:italic;
 }
 
 /* MESSAGES */
-#messages {
-    flex: 1;
-    min-height: 0;
-    padding: 10px;
-    overflow-y: auto;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+#messages{
+    flex:1;
+    min-height:0;
+    padding:10px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
 }
 
-.message {
-    position: relative;
-    padding: 9px 13px;
-    margin: 4px 0;
-    border-radius: 11px;
-    max-width: 80%;
-    width: fit-content;
-    word-wrap: break-word;
-    overflow-wrap: anywhere;
-    font-size: 16px;
-    line-height: 1.35;
-
-    user-select: none;
-    -webkit-user-select: none;
+.message{
+    max-width:82%;
+    width:fit-content;
+    margin:4px 0;
+    padding:9px 13px;
+    border-radius:11px;
+    word-break:break-word;
+    font-size:16px;
+    line-height:1.35;
+    user-select:none;
+    -webkit-user-select:none;
 }
 
-.my-message {
-    align-self: flex-end;
-    background: #dcf8c6;
-    border-bottom-right-radius: 3px;
+.my-message{
+    align-self:flex-end;
+    background:#dcf8c6;
+    border-bottom-right-radius:3px;
 }
 
-.other-message {
-    align-self: flex-start;
-    background: white;
-    border-bottom-left-radius: 3px;
+.other-message{
+    align-self:flex-start;
+    background:white;
+    border-bottom-left-radius:3px;
 }
 
-.edited {
-    font-size: 11px;
-    color: #777;
-    margin-left: 5px;
+.edited{
+    margin-left:6px;
+    color:#777;
+    font-size:11px;
+}
+
+/* EDIT BAR */
+#editBar{
+    display:none;
+    flex-shrink:0;
+    padding:8px 12px;
+    background:#e8e8e8;
+    border-left:4px solid #128c7e;
+}
+
+#editBar span{
+    color:#075e54;
+    font-size:14px;
+}
+
+#cancelEdit{
+    float:right;
+    border:0;
+    background:transparent;
+    font-size:18px;
+    color:#777;
 }
 
 /* SEND */
-.send {
-    flex-shrink: 0;
-    display: flex;
-    gap: 8px;
-    padding: 9px;
-    background: #ddd;
+.send{
+    flex-shrink:0;
+    display:flex;
+    gap:8px;
+    padding:9px;
+    padding-bottom:calc(9px + env(safe-area-inset-bottom));
+    background:#ddd;
 }
 
-#message {
-    flex: 1;
-    min-width: 0;
-    height: 48px;
-    padding: 0 16px;
-    border: none;
-    border-radius: 25px;
-    outline: none;
-    background: white;
-    color: #111;
-    font-size: 16px;
+#message{
+    flex:1;
+    min-width:0;
+    height:48px;
+    padding:0 16px;
+    border:0;
+    border-radius:25px;
+    outline:0;
+    background:white;
+    color:#111;
+    font-size:16px;
 }
 
-#sendBtn {
-    flex-shrink: 0;
-    height: 48px;
-    padding: 0 18px;
-    border: none;
-    border-radius: 25px;
-    background: #128c7e;
-    color: white;
-    font-weight: bold;
+#sendBtn{
+    flex-shrink:0;
+    height:48px;
+    padding:0 18px;
+    border:0;
+    border-radius:25px;
+    background:#128c7e;
+    color:white;
+    font-weight:bold;
 }
 
-/* EDIT MODE */
-#editBar {
-    display: none;
-    background: #e8e8e8;
-    padding: 8px 12px;
-    border-left: 4px solid #128c7e;
-}
-
-#editBar span {
-    color: #075e54;
-    font-size: 14px;
-}
-
-#cancelEdit {
-    float: right;
-    border: none;
-    background: transparent;
-    color: #777;
-    font-size: 18px;
+#sendBtn:disabled{
+    background:#999;
 }
 
 /* LONG PRESS MENU */
-#messageMenu {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
-    overflow: hidden;
+#messageMenu{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    width:150px;
+    overflow:hidden;
+    border-radius:10px;
+    background:white;
+    box-shadow:0 4px 18px rgba(0,0,0,.25);
 }
 
-#messageMenu button {
-    display: block;
-    width: 150px;
-    padding: 13px;
-    border: none;
-    background: white;
-    text-align: left;
-    font-size: 16px;
+#messageMenu button{
+    display:block;
+    width:100%;
+    padding:14px;
+    border:0;
+    background:white;
+    text-align:left;
+    font-size:16px;
 }
 
-#messageMenu button:active {
-    background: #eee;
+#messageMenu button:active{
+    background:#eee;
 }
 
-/* MOBILE */
-@media (max-width: 600px) {
-
-    .message {
-        max-width: 84%;
-    }
+@media(max-width:600px){
+    .message{max-width:85%}
 }
 </style>
 </head>
-
 
 <body>
 
@@ -243,11 +234,16 @@ body {
 
         <input
             id="chatId"
+            type="text"
             placeholder="Chat ID डालें"
             autocomplete="off"
         >
 
-        <button id="joinBtn" onclick="joinChat()">
+        <button
+            type="button"
+            id="joinBtn"
+            onclick="joinChat()"
+        >
             Join
         </button>
 
@@ -261,13 +257,18 @@ body {
 
     <div id="editBar">
         <span>✏️ Message edit कर रहे हैं</span>
-        <button id="cancelEdit" onclick="cancelEdit()">✕</button>
+        <button
+            type="button"
+            id="cancelEdit"
+            onclick="cancelEdit()"
+        >✕</button>
     </div>
 
     <div class="send">
 
         <input
             id="message"
+            type="text"
             placeholder="Message likho..."
             disabled
             autocomplete="off"
@@ -276,6 +277,7 @@ body {
         >
 
         <button
+            type="button"
             id="sendBtn"
             onclick="sendMessage()"
             disabled
@@ -288,15 +290,20 @@ body {
 </div>
 
 
-<!-- LONG PRESS MENU -->
-
+<!-- EDIT / DELETE MENU -->
 <div id="messageMenu">
 
-    <button onclick="editSelectedMessage()">
+    <button
+        type="button"
+        onclick="editSelectedMessage()"
+    >
         ✏️ Edit
     </button>
 
-    <button onclick="deleteSelectedMessage()">
+    <button
+        type="button"
+        onclick="deleteSelectedMessage()"
+    >
         🗑️ Delete
     </button>
 
@@ -304,56 +311,37 @@ body {
 
 
 <!-- FIREBASE -->
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
 
 <script>
 
-/* =========================
-   FIREBASE
-========================= */
+/* FIREBASE */
 
 const firebaseConfig = {
-
-    apiKey: "AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
-
-    authDomain: "mychat-51ee7.firebaseapp.com",
-
-    projectId: "mychat-51ee7",
-
-    storageBucket: "mychat-51ee7.firebasestorage.app",
-
-    messagingSenderId: "917061147739",
-
-    appId: "1:917061147739:web:26644bb81926959325337e",
-
-    measurementId: "G-SK11R1SYJ8"
+    apiKey:"AIzaSyDMXaQ6iS7wI67QYkXaxabn-uKJeiXPxHA",
+    authDomain:"mychat-51ee7.firebaseapp.com",
+    projectId:"mychat-51ee7",
+    storageBucket:"mychat-51ee7.firebasestorage.app",
+    messagingSenderId:"917061147739",
+    appId:"1:917061147739:web:26644bb81926959325337e",
+    measurementId:"G-SK11R1SYJ8"
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
+const db=firebase.firestore();
 
 
-/* =========================
-   UNIQUE USER ID
-========================= */
+/* USER ID */
 
-let myUserId =
-    localStorage.getItem("myChatUserId");
+let myUserId=localStorage.getItem("myChatUserId");
 
-if (!myUserId) {
+if(!myUserId){
 
-    myUserId =
-        "user_" +
-        Date.now() +
-        "_" +
-        Math.random()
-        .toString(36)
-        .substring(2, 9);
+    myUserId=
+        "user_"+Date.now()+"_"+
+        Math.random().toString(36).substring(2,9);
 
     localStorage.setItem(
         "myChatUserId",
@@ -362,150 +350,104 @@ if (!myUserId) {
 }
 
 
-/* =========================
-   VARIABLES
-========================= */
+/* VARIABLES */
 
-let currentChatId = "";
+let currentChatId="";
+let unsubscribeMessages=null;
+let unsubscribeTyping=null;
+let typingTimer=null;
 
-let unsubscribeMessages = null;
-
-let unsubscribeTyping = null;
-
-let typingTimer = null;
-
-let selectedMessageId = null;
-
-let selectedMessageData = null;
-
-let editingMessageId = null;
+let selectedMessageId=null;
+let selectedMessageData=null;
+let editingMessageId=null;
 
 
-/* =========================
-   JOIN CHAT
-========================= */
+/* JOIN */
 
-function joinChat() {
+function joinChat(){
 
-    const chatId =
-        document
-        .getElementById("chatId")
-        .value
-        .trim();
+    const chatId=
+        document.getElementById("chatId")
+        .value.trim();
 
-    if (chatId === "") {
-
+    if(!chatId){
         alert("Chat ID डालें");
-
         return;
     }
 
-    currentChatId = chatId;
+    currentChatId=chatId;
 
-
-    if (unsubscribeMessages) {
-
+    if(unsubscribeMessages){
         unsubscribeMessages();
-
-        unsubscribeMessages = null;
     }
 
-
-    if (unsubscribeTyping) {
-
+    if(unsubscribeTyping){
         unsubscribeTyping();
-
-        unsubscribeTyping = null;
     }
 
+    document.getElementById("roomName").style.display="block";
 
-    document
-        .getElementById("roomName")
-        .style.display = "block";
+    document.getElementById("roomName").textContent=
+        "🔒 Chat ID: "+currentChatId;
 
+    document.getElementById("message").disabled=false;
 
-    document
-        .getElementById("roomName")
-        .textContent =
-        "🔒 Chat ID: " + currentChatId;
-
-
-    document
-        .getElementById("message")
-        .disabled = false;
-
-
-    document
-        .getElementById("sendBtn")
-        .disabled = false;
-
+    document.getElementById("sendBtn").disabled=false;
 
     loadMessages();
 
     watchTyping();
 
+    setTimeout(()=>{
+        document.getElementById("message").focus();
+    },100);
 }
 
 
-/* =========================
-   SEND / EDIT
-========================= */
+/* SEND */
 
-function sendMessage() {
+function sendMessage(){
 
-    const input =
+    const input=
         document.getElementById("message");
 
-    const text =
-        input.value.trim();
+    const text=input.value.trim();
 
+    if(!text)return;
 
-    if (text === "") {
-
-        return;
-    }
-
-
-    if (currentChatId === "") {
-
+    if(!currentChatId){
         alert("Pehle Join karo");
-
         return;
     }
 
 
-    /* EDIT MODE */
+    /* EDIT */
 
-    if (editingMessageId) {
+    if(editingMessageId){
 
         db.collection("messages")
-            .doc(editingMessageId)
-            .update({
+        .doc(editingMessageId)
+        .update({
 
-                text: text,
+            text:text,
+            edited:true,
+            editedAt:
+                firebase.firestore.FieldValue
+                .serverTimestamp()
 
-                edited: true,
+        })
+        .then(()=>{
 
-                editedAt:
-                    firebase.firestore.FieldValue
-                    .serverTimestamp()
+            input.value="";
 
-            })
-            .then(() => {
+            cancelEdit();
 
-                input.value = "";
+            keepInputFocus();
 
-                cancelEdit();
-
-            })
-            .catch((error) => {
-
-                alert(
-                    "Edit nahi hua: " +
-                    error.message
-                );
-
-            });
+        })
+        .catch(error=>{
+            alert("Edit nahi hua: "+error.message);
+        });
 
         return;
     }
@@ -514,125 +456,136 @@ function sendMessage() {
     /* NEW MESSAGE */
 
     db.collection("messages")
-        .add({
+    .add({
 
-            chatId: currentChatId,
+        chatId:currentChatId,
+        text:text,
+        sender:myUserId,
+        edited:false,
 
-            text: text,
+        createdAt:
+            firebase.firestore.FieldValue
+            .serverTimestamp()
 
-            sender: myUserId,
+    })
+    .then(()=>{
 
-            edited: false,
+        input.value="";
 
-            createdAt:
-                firebase.firestore.FieldValue
-                .serverTimestamp()
+        stopTyping();
 
-        })
-        .then(() => {
+        /*
+         * IMPORTANT:
+         * Send ke baad input ko
+         * active rakho.
+         */
 
-            input.value = "";
+        keepInputFocus();
 
-            stopTyping();
+    })
+    .catch(error=>{
 
-        })
-        .catch((error) => {
+        alert(
+            "Message send nahi hua: "+
+            error.message
+        );
 
-            alert(
-                "Message send nahi hua: " +
-                error.message
-            );
+        keepInputFocus();
 
-        });
-
+    });
 }
 
 
-/* =========================
-   LOAD MESSAGES
-========================= */
+/* KEEP INPUT ACTIVE */
 
-function loadMessages() {
+function keepInputFocus(){
 
-    const messages =
+    const input=
+        document.getElementById("message");
+
+    if(input.disabled)return;
+
+    input.focus();
+
+    /*
+     * Mobile browser me focus
+     * maintain karne ki extra koshish.
+     */
+
+    setTimeout(()=>{
+        input.focus();
+    },50);
+
+    setTimeout(()=>{
+        input.focus();
+    },200);
+}
+
+
+/* LOAD MESSAGES */
+
+function loadMessages(){
+
+    const messages=
         document.getElementById("messages");
 
-
-    unsubscribeMessages =
+    unsubscribeMessages=
         db.collection("messages")
-
         .where(
             "chatId",
             "==",
             currentChatId
         )
-
         .onSnapshot(
 
-            (snapshot) => {
+            snapshot=>{
 
-                messages.innerHTML = "";
+                messages.innerHTML="";
 
-                let list = [];
+                let list=[];
 
-
-                snapshot.forEach((doc) => {
+                snapshot.forEach(doc=>{
 
                     list.push({
-
-                        id: doc.id,
-
+                        id:doc.id,
                         ...doc.data()
-
                     });
 
                 });
 
 
-                list.sort((a, b) => {
+                list.sort((a,b)=>{
 
-                    const aTime =
+                    const aTime=
                         a.createdAt
                         ? a.createdAt.toMillis()
                         : 0;
 
-                    const bTime =
+                    const bTime=
                         b.createdAt
                         ? b.createdAt.toMillis()
                         : 0;
 
-                    return aTime - bTime;
+                    return aTime-bTime;
 
                 });
 
 
-                list.forEach((msg) => {
+                list.forEach(msg=>{
 
-                    const div =
+                    const div=
                         document.createElement("div");
 
-
-                    div.classList.add(
-                        "message"
-                    );
+                    div.className="message";
 
 
-                    /* APNA MESSAGE */
-
-                    if (
-                        msg.sender ===
-                        myUserId
-                    ) {
+                    if(msg.sender===myUserId){
 
                         div.classList.add(
                             "my-message"
                         );
 
-                    }
-
-                    /* DUSRA MESSAGE */
-
-                    else {
+                    }else{
 
                         div.classList.add(
                             "other-message"
@@ -641,40 +594,28 @@ function loadMessages() {
                     }
 
 
-                    /* MESSAGE TEXT */
-
-                    div.textContent =
-                        msg.text || "";
+                    div.textContent=
+                        msg.text||"";
 
 
-                    /* EDITED */
+                    if(msg.edited){
 
-                    if (msg.edited) {
+                        const edited=
+                            document.createElement("span");
 
-                        const edited =
-                            document.createElement(
-                                "span"
-                            );
+                        edited.className="edited";
 
-                        edited.className =
-                            "edited";
+                        edited.textContent="edited";
 
-                        edited.textContent =
-                            "edited";
-
-                        div.appendChild(
-                            edited
-                        );
+                        div.appendChild(edited);
 
                     }
 
 
-                    /* LONG PRESS ONLY FOR OWN MESSAGE */
+                    /* LONG PRESS
+                       ONLY OWN MESSAGE */
 
-                    if (
-                        msg.sender ===
-                        myUserId
-                    ) {
+                    if(msg.sender===myUserId){
 
                         addLongPress(
                             div,
@@ -690,69 +631,52 @@ function loadMessages() {
                 });
 
 
-                messages.scrollTop =
+                messages.scrollTop=
                     messages.scrollHeight;
 
             },
 
-            (error) => {
+            error=>{
 
                 console.error(error);
 
-                messages.innerHTML =
-                    "<div class='error'>" +
-                    "Messages load nahi ho pa rahe." +
+                messages.innerHTML=
+                    "<div style='color:red;padding:15px'>"+
+                    "Messages load nahi ho pa rahe."+
                     "</div>";
 
             }
-
         );
-
 }
 
 
-/* =========================
-   LONG PRESS
-========================= */
+/* LONG PRESS */
 
 function addLongPress(
     element,
     messageId,
     messageData
-) {
+){
 
-    let timer = null;
-
-    let longPressed = false;
+    let timer=null;
 
 
-    function startPress(event) {
+    function start(event){
 
-        longPressed = false;
+        timer=setTimeout(()=>{
 
+            selectedMessageId=messageId;
 
-        timer = setTimeout(() => {
+            selectedMessageData=messageData;
 
-            longPressed = true;
+            showMessageMenu(event);
 
-
-            selectedMessageId =
-                messageId;
-
-            selectedMessageData =
-                messageData;
-
-
-            showMessageMenu(
-                event
-            );
-
-        }, 600);
+        },600);
 
     }
 
 
-    function cancelPress() {
+    function cancel(){
 
         clearTimeout(timer);
 
@@ -761,258 +685,191 @@ function addLongPress(
 
     element.addEventListener(
         "touchstart",
-        startPress,
-        { passive: true }
+        start,
+        {passive:true}
     );
-
 
     element.addEventListener(
         "touchend",
-        cancelPress
+        cancel
     );
-
 
     element.addEventListener(
         "touchmove",
-        cancelPress
+        cancel
     );
 
-
-    /* COMPUTER */
 
     element.addEventListener(
         "mousedown",
-        startPress
+        start
     );
-
 
     element.addEventListener(
         "mouseup",
-        cancelPress
+        cancel
     );
-
 
     element.addEventListener(
         "mouseleave",
-        cancelPress
+        cancel
     );
-
 }
 
 
-/* =========================
-   SHOW MENU
-========================= */
+/* MENU */
 
-function showMessageMenu(event) {
+function showMessageMenu(event){
 
-    const menu =
-        document.getElementById(
-            "messageMenu"
-        );
+    const menu=
+        document.getElementById("messageMenu");
+
+    menu.style.display="block";
 
 
-    menu.style.display = "block";
+    let x=20;
+    let y=100;
 
 
-    let x = 0;
+    if(event.touches && event.touches.length){
 
-    let y = 0;
+        x=event.touches[0].clientX;
+        y=event.touches[0].clientY;
 
+    }else if(event.clientX){
 
-    if (
-        event &&
-        event.touches &&
-        event.touches.length
-    ) {
-
-        x =
-            event.touches[0].clientX;
-
-        y =
-            event.touches[0].clientY;
-
-    }
-
-    else if (event) {
-
-        x = event.clientX;
-
-        y = event.clientY;
+        x=event.clientX;
+        y=event.clientY;
 
     }
 
 
-    /* Screen ke andar menu */
+    if(x+150>window.innerWidth){
 
-    if (x + 150 > window.innerWidth) {
+        x=window.innerWidth-160;
 
-        x =
-            window.innerWidth - 160;
+    }
+
+    if(y+100>window.innerHeight){
+
+        y=window.innerHeight-110;
 
     }
 
 
-    if (y + 100 > window.innerHeight) {
-
-        y =
-            window.innerHeight - 110;
-
-    }
-
-
-    menu.style.left =
-        x + "px";
-
-    menu.style.top =
-        y + "px";
-
+    menu.style.left=x+"px";
+    menu.style.top=y+"px";
 }
 
 
-/* =========================
-   EDIT MESSAGE
-========================= */
+/* EDIT */
 
-function editSelectedMessage() {
+function editSelectedMessage(){
 
-    if (!selectedMessageId) {
+    if(!selectedMessageId)return;
 
-        return;
-    }
+    const input=
+        document.getElementById("message");
 
+    input.value=
+        selectedMessageData.text||"";
 
-    const input =
-        document.getElementById(
-            "message"
-        );
-
-
-    input.value =
-        selectedMessageData.text || "";
-
-
-    editingMessageId =
+    editingMessageId=
         selectedMessageId;
 
-
-    document
-        .getElementById("editBar")
-        .style.display = "block";
-
-
-    input.focus();
-
+    document.getElementById(
+        "editBar"
+    ).style.display="block";
 
     closeMessageMenu();
 
+    keepInputFocus();
 }
 
 
-/* =========================
-   DELETE MESSAGE
-========================= */
+/* DELETE */
 
-function deleteSelectedMessage() {
+function deleteSelectedMessage(){
 
-    if (!selectedMessageId) {
+    if(!selectedMessageId)return;
 
-        return;
-    }
+    const ok=confirm(
+        "Kya aap ye message delete karna chahte hain?"
+    );
 
-
-    const confirmDelete =
-        confirm(
-            "Kya aap ye message delete karna chahte hain?"
-        );
-
-
-    if (!confirmDelete) {
+    if(!ok){
 
         closeMessageMenu();
-
         return;
+
     }
 
 
     db.collection("messages")
-        .doc(selectedMessageId)
-        .delete()
-        .then(() => {
+    .doc(selectedMessageId)
+    .delete()
+    .then(()=>{
 
-            closeMessageMenu();
+        closeMessageMenu();
 
-        })
-        .catch((error) => {
+    })
+    .catch(error=>{
 
-            alert(
-                "Message delete nahi hua: " +
-                error.message
-            );
+        alert(
+            "Message delete nahi hua: "+
+            error.message
+        );
 
-        });
-
+    });
 }
 
 
-/* =========================
-   CANCEL EDIT
-========================= */
+/* CANCEL EDIT */
 
-function cancelEdit() {
+function cancelEdit(){
 
-    editingMessageId = null;
+    editingMessageId=null;
 
-    document
-        .getElementById("message")
-        .value = "";
+    document.getElementById(
+        "message"
+    ).value="";
 
+    document.getElementById(
+        "editBar"
+    ).style.display="none";
 
-    document
-        .getElementById("editBar")
-        .style.display = "none";
-
+    keepInputFocus();
 }
 
 
-/* =========================
-   CLOSE MENU
-========================= */
+/* CLOSE MENU */
 
-function closeMessageMenu() {
+function closeMessageMenu(){
 
-    document
-        .getElementById(
-            "messageMenu"
-        )
-        .style.display = "none";
+    document.getElementById(
+        "messageMenu"
+    ).style.display="none";
 
-
-    selectedMessageId = null;
-
-    selectedMessageData = null;
-
+    selectedMessageId=null;
+    selectedMessageData=null;
 }
 
 
-/* =========================
-   OUTSIDE CLICK
-========================= */
+/* OUTSIDE MENU */
 
 document.addEventListener(
     "click",
-    function(event) {
+    event=>{
 
-        const menu =
+        const menu=
             document.getElementById(
                 "messageMenu"
             );
 
-
-        if (
-            menu.style.display === "block" &&
+        if(
+            menu.style.display==="block" &&
             !menu.contains(event.target)
-        ) {
+        ){
 
             closeMessageMenu();
 
@@ -1022,157 +879,123 @@ document.addEventListener(
 );
 
 
-/* =========================
-   TYPING
-========================= */
+/* TYPING */
 
-function typing() {
+function typing(){
 
-    if (currentChatId === "") {
-
-        return;
-    }
-
+    if(!currentChatId)return;
 
     db.collection("typing")
-        .doc(currentChatId)
-        .set({
+    .doc(currentChatId)
+    .set({
 
-            userId: myUserId,
+        userId:myUserId,
+        typing:true,
 
-            typing: true,
+        time:
+            firebase.firestore.FieldValue
+            .serverTimestamp()
 
-            time:
-                firebase.firestore.FieldValue
-                .serverTimestamp()
-
-        });
-
+    });
 
     clearTimeout(typingTimer);
 
-
-    typingTimer =
+    typingTimer=
         setTimeout(
             stopTyping,
             1500
         );
-
 }
 
 
-/* =========================
-   STOP TYPING
-========================= */
+/* STOP TYPING */
 
-function stopTyping() {
+function stopTyping(){
 
-    if (currentChatId === "") {
-
-        return;
-    }
-
+    if(!currentChatId)return;
 
     db.collection("typing")
-        .doc(currentChatId)
-        .set({
+    .doc(currentChatId)
+    .set({
 
-            userId: myUserId,
+        userId:myUserId,
+        typing:false,
 
-            typing: false,
+        time:
+            firebase.firestore.FieldValue
+            .serverTimestamp()
 
-            time:
-                firebase.firestore.FieldValue
-                .serverTimestamp()
-
-        });
-
+    });
 }
 
 
-/* =========================
-   WATCH TYPING
-========================= */
+/* WATCH TYPING */
 
-function watchTyping() {
+function watchTyping(){
 
-    const status =
+    const status=
         document.getElementById(
             "typingStatus"
         );
 
-
-    unsubscribeTyping =
+    unsubscribeTyping=
         db.collection("typing")
         .doc(currentChatId)
-        .onSnapshot(
-            (doc) => {
+        .onSnapshot(doc=>{
 
-                const data =
-                    doc.data();
+            const data=doc.data();
 
+            if(
+                data &&
+                data.typing===true &&
+                data.userId!==myUserId
+            ){
 
-                if (
-                    data &&
-                    data.typing === true &&
-                    data.userId !== myUserId
-                ) {
+                status.textContent="typing...";
 
-                    status.textContent =
-                        "typing...";
+            }else{
 
-                }
-
-                else {
-
-                    status.textContent =
-                        "";
-
-                }
+                status.textContent="";
 
             }
-        );
 
+        });
 }
 
 
-/* =========================
-   ENTER
-========================= */
+/* ENTER */
 
-function handleEnter(event) {
+function handleEnter(event){
 
-    if (event.key === "Enter") {
+    if(event.key==="Enter"){
 
         event.preventDefault();
 
         sendMessage();
 
     }
-
 }
 
 
-/* =========================
-   CHAT ID ENTER
-========================= */
+/* CHAT ID ENTER */
 
-document
-    .getElementById("chatId")
-    .addEventListener(
-        "keydown",
-        function(event) {
+document.getElementById("chatId")
+.addEventListener(
+    "keydown",
+    event=>{
 
-            if (event.key === "Enter") {
+        if(event.key==="Enter"){
 
-                joinChat();
+            event.preventDefault();
 
-            }
+            joinChat();
 
         }
-    );
+
+    }
+);
 
 </script>
 
 </body>
-  </html>
+</html>
